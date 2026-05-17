@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 · Introduction to Corporate Strategy · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 1 · Introduction to Corporate Strategy</h1>
+  <p id="subtitle">24 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why Diversify</span>
+  <span class="leg types">Where to Grow</span>
+  <span class="leg trends">How to Grow</span>
+  <span class="leg fail">Corporate Centre</span>
+  <span class="leg play">Bendix Case</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why Diversify',
+  types: 'Where to Grow',
+  trends:'How to Grow',
+  fail:  'Corporate Centre',
+  play:  'Bendix Case'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🧭', cat:'modes', sz:'lg',
+   term:'What Is Corporate Strategy?',
+   def:'The strategy a multi-business corporation uses to compete as a collection of multiple businesses. It addresses two core questions:\n• WHERE to compete\n• HOW to provide value for the corporation as a whole from the corporate centre',
+   extra:'Parada & Planellas (ESADE, Harvard Deusto Business Review, Jan 2007): "the two main concerns of corporate strategy are where to compete and how to provide value for the corporation as a whole from the corporate centre."'},
+  {id:2, emoji:'⚖️', cat:'modes', sz:'md',
+   term:'Corporate vs Business Strategy',
+   def:'Business strategy = a SINGLE business: how to compete successfully in a specific industry/market (differentiation, market positioning).\nCorporate strategy = MULTIPLE businesses: scope of the organization, which markets/industries to operate in, M&A, diversification, resource allocation.',
+   extra:'Corporate strategy is qualitatively different from single-business "business strategy" — it asks which businesses we should be in.'},
+  {id:3, emoji:'🏗️', cat:'modes', sz:'md',
+   term:'Levels of Strategy',
+   def:'Three nested levels:\n• Corporate — overall scope, resource investment & profitability (Group Advantage)\n• Business — how to compete in particular markets (Competitive Positioning)\n• Functional — how parts of the organization deliver the business strategy (Strategy Effectiveness)',
+   extra:'Each level serves a different objective; business-unit strategies must contribute to the overall corporate strategy.'},
+  {id:4, emoji:'🎓', cat:'modes', sz:'sm',
+   term:'Course Objective',
+   def:'Improve skills in designing and implementing corporate strategy — managing a large, diversified company strategically and understanding the role of the corporate centre in creating corporate advantage.',
+   extra:'DBAI Program 2025-26, Corporate Strategy, Prof. Guillermo Font (ESADE, Sant Cugat).'},
+
+  // ---------- WHY DIVERSIFY (why) ----------
+  {id:5, emoji:'💡', cat:'why', sz:'lg',
+   term:'Reasons Commonly Given to Diversify',
+   def:'Higher-level reasons: growth, risk diversification, profitability.\nMore concrete reasons: antitrust/tax law, excess capacity, leveraging existing markets/customers, search of synergies, technological capabilities, too much cash flow, poor industry outlook, maturity of core business, and corporate ego / managerial hubris / empire building.',
+   extra:'The professor splits motives into "higher-level reasons" vs "more concrete reasons" — note that managerial hubris is a recurring (bad) driver.'},
+  {id:6, emoji:'🛡️', cat:'why', sz:'md',
+   term:'Risk Diversification',
+   def:'Spreading exposure across customers, markets and cycles so that no single downturn or lost customer is catastrophic. A primary motive when the core business is highly cyclical.',
+   extra:'Bendix: "To survive, our company has made a conscious effort to diversify across customers and markets so that we have different business cycles over time." — Joe McAleese, CEO.'},
+  {id:7, emoji:'📉', cat:'why', sz:'sm',
+   term:'Core-Business Maturity',
+   def:'When the core business slows in growth and profitability, or the industry outlook is poor, firms diversify to find new growth engines and avoid stagnation.',
+   extra:'Listed by the professor among the "more concrete" reasons: poor industry outlook and maturity of core business (growth, profitability).'},
+  {id:8, emoji:'😤', cat:'why', sz:'md',
+   term:'Corporate Ego & Empire Building',
+   def:'Diversification driven by managerial hubris and the desire to build a larger empire rather than by genuine value creation — a frequent cause of value destruction.',
+   extra:'Explicitly flagged on the professor\'s list of reasons commonly given to diversify, as a warning sign.'},
+
+  // ---------- WHERE TO GROW (types) ----------
+  {id:9, emoji:'🧱', cat:'types', sz:'lg',
+   term:'Directions of Diversification',
+   def:'Three directions a firm can grow:\n1. Horizontal — different businesses at similar value-chain stages (Related vs Unrelated/conglomerate)\n2. Vertical — number of value-chain stages a firm engages in (Make vs Buy)\n3. Geographical — same business in different geographic markets (Domestic vs International)',
+   extra:'Foundations of Strategic Options: horizontal/product scope, vertical scope, geographic scope — each underpinned by economies of scale & scope, transaction costs, market vs hierarchy.'},
+  {id:10, emoji:'↔️', cat:'types', sz:'md',
+   term:'Horizontal Scope: Related vs Unrelated',
+   def:'Related diversification = the new business has a meaningful connection to the existing one; a core competency is shared (synergies). Unrelated (conglomerate) diversification = venturing into entirely different industries.',
+   extra:'Agbar reinvests cash into insurance and certification (related). Virgin launching skyrockets and doing music = unrelated diversification.'},
+  {id:11, emoji:'↕️', cat:'types', sz:'md',
+   term:'Vertical Integration',
+   def:'Varying how many value-chain stages a firm controls (make vs buy). Integrate when the firm has the necessary basic capabilities and resources and is the best performer; otherwise let others do it — unless they raise prices or limit supply.',
+   extra:'Soboce (Bolivian cement, ~35% avg growth 1986-98) keeps enough raw-material capacity to be self-sufficient but only covers part of its needs, so it negotiates strong supplier terms.'},
+  {id:12, emoji:'🌍', cat:'types', sz:'sm',
+   term:'Geographical Expansion',
+   def:'Same business in different geographic markets (domestic vs international). The implicit assumption: the resources and capabilities that gave competitive advantage at home are easily leverageable abroad — which is not always true.',
+   extra:'Marks & Spencer internationalised from 1972; by the mid-1990s ~€8bn turnover across Europe, the Americas and Asia — but a later chairman hurriedly sold off much of it.'},
+
+  // ---------- HOW TO GROW (trends) ----------
+  {id:13, emoji:'🚀', cat:'trends', sz:'lg',
+   term:'Three Modes of Growth',
+   def:'When the decision is made to expand the scope of business there are at least three options:\n• Mergers & Acquisitions (M&A)\n• Strategic Alliances\n• Internal Development (organic growth)',
+   extra:'Parada & Planellas: each mode has distinct advantages and disadvantages on speed, control, resource access, risk-sharing and cultural fit.'},
+  {id:14, emoji:'🤝', cat:'trends', sz:'md',
+   term:'Mergers & Acquisitions',
+   def:'Advantages: fast; quick access to complementary resources; a potential competitor is neutralized.\nWatchouts: culture integration, the price paid, and the situation of the acquired business.',
+   extra:'"One of the few points of consensus is that mergers do not exist" — one firm is always the buyer; "mergers" are covert acquisitions (Daimler-Benz / Chrysler, HP / Compaq).'},
+  {id:15, emoji:'🌉', cat:'trends', sz:'md',
+   term:'Strategic Alliances',
+   def:'+ Access to complementary resources, shared risk, relatively easy to reverse.\n− Slow decision making and complex management.\nTypes: alliance of addition and joint development.',
+   extra:'Banco Santander & Royal Bank of Scotland: alliance of addition (sharing branch networks) and joint development (the IBOS system; mutual support in Banespa and NatWest acquisitions).'},
+  {id:16, emoji:'🌱', cat:'trends', sz:'sm',
+   term:'Internal Development',
+   def:'Organic growth from within. + Culture compatibility. − Requires time. The challenge is generating ideas and getting a big company to behave like a small one.',
+   extra:'From Burgelman (1983) to Babson College, corporate entrepreneurship focuses on generating, maturing and approving ideas — 3M and Solvay structured processes to protect new initiatives.'},
+
+  // ---------- CORPORATE CENTRE (fail) ----------
+  {id:17, emoji:'🏛️', cat:'fail', sz:'lg',
+   term:'Corporate Advantage & Parenting',
+   def:'The corporate centre (chairman, CEO and staff) must add value so the whole is worth more than the sum of the parts. The goal is NOT to maximize each business\'s NPV individually — it is to do better than the sum of the independent businesses.',
+   extra:'Puranam & Vanneste (2016), "Corporate Advantage", Ch.1 in Corporate Strategy: Tools for Analysis and Decision-making, Cambridge University Press, 3-25.'},
+  {id:18, emoji:'🧩', cat:'fail', sz:'sm',
+   term:'Four Types of Parenting',
+   def:'Ways the corporate centre creates value:\n• Individual support — help as needs arise\n• Linking synergies — connect the business units\n• Central functions & services — shared support to BUs\n• Corporate development — developing new businesses',
+   extra:'Disney\'s corporate centre created a cross-BU marketing group (chaired-intervention by Eisner); Pirelli built central legal/security services across continents.'},
+  {id:19, emoji:'🪤', cat:'fail', sz:'md',
+   term:'The Value Trap',
+   def:'Managers think value is being created but it is not. Two intermediate cases: the centre understands the BU\'s key success factors but adds no improvement; OR it adds substantial improvements to capabilities that are not key success factors.',
+   extra:'Value contribution depends on the centre\'s intuition of the business fitting both the competitive context and the BU\'s internal improvement needs — "strategic harmony".'},
+  {id:20, emoji:'👥', cat:'fail', sz:'sm',
+   term:'Strategic Role of the Board',
+   def:'Beyond control and supervision, the board contributes strategically: building relational/non-market strategies with stakeholders, supplying valuable information, acting as a think tank, and helping identify synergies and new businesses.',
+   extra:'Post-Enron and Parmalat, priority shifted toward control — but the board remains a key actor in the corporate centre\'s strategy.'},
+
+  // ---------- BENDIX CASE (play) ----------
+  {id:21, emoji:'🚚', cat:'play', sz:'lg',
+   term:'Bendix: Diversifying for Profitability',
+   def:'Bendix Commercial Vehicle Systems (Elyria, Ohio) makes air brake and filtration systems for heavy commercial vehicles. The industry is highly cyclical, follows the economy, and is dominated by a few OEMs with only four large original-equipment customers — creating a need to diversify to reduce dependency.',
+   extra:'Joe McAleese, president & CEO: depending on a single market is risky, but so is relying on a small customer base.'},
+  {id:22, emoji:'🔢', cat:'play', sz:'md',
+   term:'Why Diversify the Customer Base',
+   def:'McAleese\'s three reasons companies must expand the number of customers:\n1. Reduce the risk of failure (losing one big customer could be disastrous)\n2. Decrease pricing pressures (customers squeeze suppliers who depend on them)\n3. Increase competitiveness',
+   extra:'"The only reason we exist is because they are willing to buy what we are offering… the path to growth and profitability is directly through your customers." — McAleese.'},
+  {id:23, emoji:'🛞', cat:'play', sz:'sm',
+   term:'Bendix Horizontal Diversification',
+   def:'Bendix expanded its portfolio (compressors, valves, ABS, stability and driver-assistance systems) and moved to a modular focus — supplying integrated assemblies instead of individual parts — and entered adjacent markets like refuse trucks.',
+   extra:'"Safety is central to our product diversification strategy" — diversification must be based on core competencies, meet customer needs and be financially lucrative.'},
+  {id:24, emoji:'🌐', cat:'play', sz:'md',
+   term:'Bendix Geographical Diversification',
+   def:'Expanding outside home markets is the most challenging type of diversification but can yield outstanding results — be selective and remember the most profitable regions are not always the easiest. Bendix was acquired by Knorr-Bremse (2002), having earlier merged Bendix Corp. with Allied Corp. (1982).',
+   extra:'Bendix (US & Mexico) leveraged Germany-based Knorr-Bremse\'s infrastructure to enter Europe; with Europe mature, McAleese saw future growth in Asia.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

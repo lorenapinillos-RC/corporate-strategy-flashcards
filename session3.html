@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 3 · Horizontal Scope — Diversification · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 3 · Horizontal Scope — Diversification</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why Diversify</span>
+  <span class="leg types">Synergy Operators</span>
+  <span class="leg trends">Related vs Unrelated</span>
+  <span class="leg fail">Diversification Discount</span>
+  <span class="leg play">PepsiCo Case</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why Diversify',
+  types: 'Synergy Operators',
+  trends:'Related vs Unrelated',
+  fail:  'Diversification Discount',
+  play:  'PepsiCo Case'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🧭', cat:'modes', sz:'lg',
+   term:'Horizontal Scope Diversification',
+   def:'Expanding into new product or geographic markets at the same level of the value chain. It comes in two flavours:\n• RELATED — businesses share value-chain links\n• UNRELATED — no meaningful value-chain relationship',
+   extra:'ESADE Session 3 (Prof. Guillermo Font). The strategic question: what resources let the firm outperform competitors in a new market — by catching up, creating synergies, or innovating?'},
+  {id:2, emoji:'🧪', cat:'modes', sz:'lg',
+   term:'Porter\'s Three Tests for Diversification',
+   def:'Porter says a diversifying move must pass three tests:\n1. Attractiveness — the new industry must be (or become) structurally attractive\n2. Cost-of-entry — entry cost must not capitalize all future profits\n3. Better-off — the new unit and corporation must gain competitive advantage from the link',
+   extra:'Source: Porter (1987), From Competitive Advantage to Corporate Strategy, HBR. Failing any one test destroys value.'},
+  {id:3, emoji:'🔗', cat:'modes', sz:'md',
+   term:'Synergy',
+   def:'The additional operating benefit generated when two or more businesses collaborate, creating value that exceeds what each would achieve independently.',
+   extra:'Joint ownership can create synergy through shared operations and collaborative strategies. A value chain analysis is essential to locate where synergy actually arises.'},
+  {id:4, emoji:'⚖️', cat:'modes', sz:'md',
+   term:'The Test for Diversification (Formula)',
+   def:'Joint ownership is justified only if:\nV(A) < -C(B) + V(AB)\n• V(A): value of A if NOT jointly operated\n• C(B): cost of entry into B\n• V(AB): value of A and B if jointly operated',
+   extra:'Source: Puranam & Vanneste (2016). Two conditions: cost of entry must not capitalize all future profits, and either unit must gain advantage from the link.'},
+  {id:5, emoji:'💎', cat:'modes', sz:'sm',
+   term:'VRIO / VRIN Framework',
+   def:'Resources matter for synergy only if they are Valuable, Rare, Inimitable, and the firm is Organized to capture value.',
+   extra:'Valuable = raises customer value or lowers cost; Rare = held by few; Inimitable = costly to copy; Organized = the firm is ready and able to exploit it.'},
+  {id:6, emoji:'🎯', cat:'modes', sz:'sm',
+   term:'The Ultimate Goal: Corporate Advantage',
+   def:'The ultimate aim of corporate strategy is to maximize corporate advantage by effectively managing a portfolio of businesses.',
+   extra:'Corporate advantage exists when the parent creates more value for its units than they could generate independently — not from merely owning multiple businesses.'},
+
+  // ---------- WHY DIVERSIFY (why) ----------
+  {id:7, emoji:'💡', cat:'why', sz:'lg',
+   term:'Operational vs Non-Operational Synergies',
+   def:'• OPERATIONAL — arise when businesses are operated jointly to enhance joint value; require coordination of decisions across businesses (often need common ownership)\n• NON-OPERATIONAL — do not require joint operation; typically financial (scale economies in financing) or tax (moving domicile to low-tax location)',
+   extra:'Source: Puranam & Vanneste (2016). Corporate strategy focuses on operational synergies; non-operational ones are largely replicable by investors themselves.'},
+  {id:8, emoji:'🧬', cat:'why', sz:'lg',
+   term:'Economies of Scope',
+   def:'Cost economies that exist when employing a resource across multiple activities uses less of that resource than carrying out the activities independently.',
+   extra:'Scale = cost economies from more output of ONE product; scope = cost economies from output of MULTIPLE products. Scope can come from tangible or intangible resources.'},
+  {id:9, emoji:'🧠', cat:'why', sz:'md',
+   term:'Sharing Knowledge',
+   def:'Sharing knowledge across businesses creates competitive advantage IF activities are similar enough to share expertise AND the transferred skills are important for competitive advantage.',
+   extra:'A weak knowledge link (forced transfer between unrelated activities) yields no advantage and adds coordination cost instead.'},
+  {id:10, emoji:'🛠️', cat:'why', sz:'md',
+   term:'Sharing Activities',
+   def:'Sharing activities lowers cost or raises willingness-to-pay, boosts utilization, and can achieve scale and learning-curve effects — but must involve activities crucial to competitive advantage.',
+   extra:'P&G shares sales and physical distribution for disposable diapers and paper towels — effective because these items are bulky and costly to ship.'},
+  {id:11, emoji:'❓', cat:'why', sz:'md',
+   term:'The Question Before Diversifying',
+   def:'What resources and capabilities does the firm possess that will let it outperform competitors in a new product or geographic market?',
+   extra:'Three routes: catching up or leapfrogging existing competitors; creating unique synergies; acquiring new knowledge and innovating.'},
+  {id:12, emoji:'🐔', cat:'why', sz:'sm',
+   term:'Relatedness Is About Resources, Not Products',
+   def:'Businesses that look unrelated by product can be deeply related through shared resources. Honda spans cars, motorcycles, marine equipment and avionics — linked by engine technology.',
+   extra:'Prepared by Prof. Luis Vives. "How would you place 4 Hondas in a garage for 2 cars?" — the answer is shared gasoline-engine capability.'},
+
+  // ---------- SYNERGY OPERATORS (types) ----------
+  {id:13, emoji:'🧰', cat:'types', sz:'lg',
+   term:'The 4C\'s Framework',
+   def:'Basic synergy operators mapped on two axes — resource similarity and modification needed:\n• CONSOLIDATION — similar resources, high modification\n• COMBINATION — similar resources, low modification\n• CUSTOMIZATION — dissimilar resources, high modification\n• CONNECTION — dissimilar resources, low modification',
+   extra:'Source: Puranam & Vanneste (2016). Operational synergies must be traceable to links between value chains and the resources underlying them.'},
+  {id:14, emoji:'🗜️', cat:'types', sz:'lg',
+   term:'Consolidation',
+   def:'SIMILAR resources, SUBSTANTIAL modification. Creating value by rationalization — removing redundancies. Gains come from elimination.',
+   extra:'May require fewer people and less investment: merging departments, forming shared services, closing factories. Resources on one or both sides are trimmed and adjusted.'},
+  {id:15, emoji:'➕', cat:'types', sz:'md',
+   term:'Combination',
+   def:'SIMILAR resources, LOW modification. Gains come from pooling similar resources from similar value-chain activities — "volume power".',
+   extra:'Combining purchasing for volume discounts; acquiring a competitor then raising prices; greater bargaining power with suppliers/customers. May be blocked by antitrust regulation.'},
+  {id:16, emoji:'🔧', cat:'types', sz:'md',
+   term:'Customization',
+   def:'DISSIMILAR resources, HIGH modification. Creating value by co-specializing dissimilar resources to ensure inter-operability — the final product works better or costs less.',
+   extra:'Examples: bundles/solutions, transferring intangibles (IP) from A to B, building a warehouse next to a manufacturing site. Involves modification of resources on one or both sides.'},
+  {id:17, emoji:'🔌', cat:'types', sz:'md',
+   term:'Connection',
+   def:'DISSIMILAR resources, LOW modification. Creating value by pooling outputs of dissimilar value-chain activities with little modification — bundle and cross-sell.',
+   extra:'Examples: cross-selling (a bank selling insurance), one-stop shop reducing search costs, applying a common brand across businesses, connecting sales teams to sell a bundle.'},
+  {id:18, emoji:'📉', cat:'types', sz:'sm',
+   term:'Negative Synergies',
+   def:'Diversification can also destroy value: brand dilution, organizational complexity, and loss of initiative, independence and speed in decision-making.',
+   extra:'Source: Puranam & Vanneste (2016). Synergy is not automatic — coordination costs and dis-synergies must be netted against the gains.'},
+
+  // ---------- RELATED vs UNRELATED (trends) ----------
+  {id:19, emoji:'🌿', cat:'trends', sz:'lg',
+   term:'Related Diversification',
+   def:'Diversifying into businesses that share meaningful value-chain relationships or demand-side synergies with the original business — exploiting economies of scope by sharing knowledge and activities.',
+   extra:'Value is created by the corporate parent coordinating related businesses and leveraging common resources (distribution, brands, marketing, technology).'},
+  {id:20, emoji:'🏗️', cat:'trends', sz:'lg',
+   term:'Unrelated Diversification',
+   def:'Diversifying into businesses with NO meaningful value-chain relationship or demand-side synergies. Mostly achieved via M&A; acquired businesses stay autonomous.',
+   extra:'Headquarters supplies capital to each unit, transferring resources from "cash cow" businesses; unit managers are compensated on unit results.'},
+  {id:21, emoji:'📜', cat:'trends', sz:'md',
+   term:'The Two Assumptions of Unrelated Diversification',
+   def:'Unrelated diversification rests on two assumptions:\n1. Corporate managers have superior information vs. outsiders\n2. Top management can allocate resources across unrelated businesses more efficiently than markets',
+   extra:'Both assumptions are weak in developed markets, where capital and labor markets allocate resources well — the core challenge to the conglomerate model.'},
+  {id:22, emoji:'🏦', cat:'trends', sz:'sm',
+   term:'Private Equity as a Special Conglomerate',
+   def:'PE firms are conglomerates of a special kind: high LBO debt restricts manager discretion, legal separation eliminates cross-subsidization, and each business has its own board.',
+   extra:'LBO general partners typically contribute 1%–10% of total equity from personal wealth, sharpening monitoring incentives that classic conglomerates lack.'},
+
+  // ---------- DIVERSIFICATION DISCOUNT (fail) ----------
+  {id:23, emoji:'⚠️', cat:'fail', sz:'lg',
+   term:'The Diversification Discount',
+   def:'Numerous studies show firms that diversify into unrelated businesses trade at a discount to the sum of their parts.',
+   extra:'The discount during the 1990s averaged about 16%, with a median of 8% (Belén Villalonga, 2004). This questions conglomerates\' ability to add value.'},
+  {id:24, emoji:'🕳️', cat:'fail', sz:'md',
+   term:'Why Conglomerates Fail to Add Value',
+   def:'Suggested reasons: few coordination mechanisms (units have wide autonomy); markets allocate capital/labor well; repeated governance failures (cross-subsidizing ailing units, reluctance to divest); empire-building executives.',
+   extra:'Coordination required to exploit economies of scope and scale is costly and hard to achieve at large complex conglomerates.'},
+  {id:25, emoji:'⏳', cat:'fail', sz:'md',
+   term:'The Discount Persists Over Time',
+   def:'The conglomeration discount persisted through and beyond the financial crisis — it is not a short-lived anomaly.',
+   extra:'Source: BCG Report, The Power of Diversified Companies during the Crisis (2012). Size and financial synergies alone do not guarantee a sustained advantage.'},
+  {id:26, emoji:'🌍', cat:'fail', sz:'sm',
+   term:'The Institutional Context Matters',
+   def:'Higher diversification leads to a wide range of outcomes. In several emerging markets, conglomerates (business groups) often outperform standalone firms. Survivors like Danaher, 3M, Berkshire Hathaway and Siemens still thrive.',
+   extra:'Source: BCG (2012). The critical success factor is management expertise in formulating and implementing corporate strategy — the more diversified, the more complexity rises.'},
+
+  // ---------- PEPSICO CASE (play) ----------
+  {id:27, emoji:'🥤', cat:'play', sz:'lg',
+   term:'PepsiCo Before Enrico',
+   def:'Three loosely linked legs — beverages, snacks, and restaurants (Pizza Hut, Taco Bell, KFC). A diversification logic that created complexity and weak strategic fit.',
+   extra:'By 1996 restaurants made 36% of sales but only 19% of operating profit; snacks made 31% of sales but 60% of profit. Enrico said Pepsi had "confused growth with constant activity".'},
+  {id:28, emoji:'✂️', cat:'play', sz:'md',
+   term:'Enrico\'s Strategic Reset',
+   def:'Roger Enrico (CEO 1996) refocused PepsiCo on RELATED diversification in convenience food and beverages: (1) divest and focus, (2) strengthen the core, (3) expand through related growth.',
+   extra:'In Dec 1997 PepsiCo spun off restaurants into the ~$10bn Tricon Global Restaurants. Enrico: "stick to the things we do well and do them better".'},
+  {id:29, emoji:'🍊', cat:'play', sz:'md',
+   term:'Tropicana & Quaker — Related Growth',
+   def:'PepsiCo acquired Tropicana (mid-1998, $1.6bn sales, world\'s top OJ) for pre-11am and healthy-drink occasions, then merged with Quaker (Dec 2000, ~$13bn all-stock) for Gatorade and wholesome snacks.',
+   extra:'Gatorade plus Tropicana would control ~25% of the $23bn noncarbonated market. Quaker snacks rode Frito-Lay\'s distribution — classic connection and combination synergies.'},
+  {id:30, emoji:'🚚', cat:'play', sz:'md',
+   term:'PepsiCo\'s Synergy Operators',
+   def:'PepsiCo applies 4C\'s operators across beverages and snacks: shared route-to-market and direct-store-delivery (combination), bundling drinks with snacks and cross-selling (connection), and portfolio-level retailer bargaining.',
+   extra:'Walmart accounted for 7% of PepsiCo worldwide sales and 12% of Quaker-Tropicana-Gatorade sales by 2002 — portfolio breadth partially offsets that buyer power.'},
+  {id:31, emoji:'📊', cat:'play', sz:'sm',
+   term:'PepsiCo\'s Own Discount',
+   def:'Despite related-diversification success, at the start of 2012 PepsiCo shares traded at a discount to the DJ US Beverages & Food group average.',
+   extra:'In July 2013 activist investor Nelson Peltz launched a public campaign to split PepsiCo into a soda group and a snacks group.'},
+  {id:32, emoji:'🌱', cat:'play', sz:'sm',
+   term:'Better-for-You / Good-for-You Pivot',
+   def:'Under Indra Nooyi (CEO 2006) PepsiCo expanded its Good-for-You and Better-for-You portfolios via acquisitions (Naked Juice 2006; Wimm-Bill-Dann dairy/juice in Russia, Dec 2010, $5.8bn).',
+   extra:'By 2011 PepsiCo had 22 brands each over $1bn in estimated annual retail sales; the 2011 Power of One plan targeted $500m accumulated annual cost savings.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

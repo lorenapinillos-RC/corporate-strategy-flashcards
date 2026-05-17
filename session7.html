@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 7 — Inorganic Growth: M&A · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 7 · Inorganic Growth — Mergers &amp; Acquisitions</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why M&amp;A</span>
+  <span class="leg types">Deal Types</span>
+  <span class="leg trends">M&amp;A Trends</span>
+  <span class="leg fail">Why It Fails</span>
+  <span class="leg play">Playbook &amp; People</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why M&A',
+  types: 'Deal Types',
+  trends:'M&A Trends',
+  fail:  'Why It Fails',
+  play:  'Playbook & People'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🧭', cat:'modes', sz:'lg',
+   term:'Three Corporate Development Modes',
+   def:'Firms grow capabilities in 3 ways:\n• BUILD — create new capabilities organically from within\n• BUY — acquire/merge with existing firms (M&A)\n• PARTNER — collaborate without full ownership (alliances)',
+   extra:'Session 7 covers the BUY route. The choice depends on speed, control and the size of the resource gap; M&A trades control and integration risk for speed.'},
+  {id:2, emoji:'🤝', cat:'modes', sz:'md',
+   term:'Merger vs Acquisition',
+   def:'Merger = two firms combine into one new entity ("marriage of equals", in theory). Acquisition = one firm buys and absorbs another; the buyer keeps control.',
+   extra:'In practice most "mergers" are really acquisitions — true mergers of equals are rare because one side almost always ends up dominant.'},
+  {id:3, emoji:'⚡', cat:'modes', sz:'md',
+   term:'Inorganic vs Organic Growth',
+   def:'Organic = grow from within (slow, fully owned). Inorganic = grow by acquiring/partnering — fast access to capabilities, scale and market position you cannot build quickly.',
+   extra:'Organic growth often leaves a "resource gap"; M&A closes it instantly but imports another firm\'s people, systems and culture.'},
+  {id:4, emoji:'💰', cat:'modes', sz:'sm',
+   term:'M&A Is Strategically Central',
+   def:'Global M&A volume exceeded $4.0 trillion in 2025 — a core lever of corporate strategy, not a side activity.',
+   extra:'2025: ~39,500 deals worth $4.0tn. Boards treat M&A as a recurring capital-allocation choice alongside capex and R&D.'},
+  {id:5, emoji:'🎯', cat:'modes', sz:'sm',
+   term:'Start With Strategy, Not the Target',
+   def:'A sound deal flows from the corporate strategy and resource gap — then a target is selected to fill it. Reversing this order is the root cause of value destruction.',
+   extra:'Bain\'s 2026 M&A agenda: "Align M&A with strategy" — respond to tech disruption, post-globalization and shifting profit pools.'},
+
+  // ---------- WHY M&A (why) ----------
+  {id:6, emoji:'💡', cat:'why', sz:'lg',
+   term:'4 Strategic Rationales for M&A',
+   def:'Why acquire? Four classic motives:\n1. Market entry (geographies, customers, distribution)\n2. Scale & growth (revenue, market share)\n3. Synergies (cost efficiencies)\n4. Capability acquisition (tech, talent, IP)',
+   extra:'Memory hook: "Speed buys M-S-S-C." All four share one logic — buying is faster than building.'},
+  {id:7, emoji:'🚪', cat:'why', sz:'md',
+   term:'Market Entry',
+   def:'Acquire instant access to new geographies, customer bases and distribution networks — far faster than organic expansion.',
+   extra:'Example: Walmart entering new country markets via acquisition rather than building stores from zero.'},
+  {id:8, emoji:'📈', cat:'why', sz:'md',
+   term:'Scale & Growth',
+   def:'Rapidly expand revenue, market share and operational scale without years of organic development.',
+   extra:'A driver of the post-1980s "race for size" — being big enough to compete globally became a strategic necessity in many industries.'},
+  {id:9, emoji:'⚙️', cat:'why', sz:'md',
+   term:'Synergies (Operational)',
+   def:'Value from coordinated decisions across two businesses — beyond simple market transactions. Coordination is the mechanism: shared infrastructure, combined operations, workforce optimization.',
+   extra:'Operational synergy ≠ financial synergy. Tax shields, listing access and capital moves are out of scope; the focus is operational coordination. V(AB) must beat V(A)+C(B).'},
+  {id:10, emoji:'🧠', cat:'why', sz:'md',
+   term:'Capability Acquisition',
+   def:'Gain proprietary technology, talent, IP or know-how that would be prohibitively expensive or slow to build internally.',
+   extra:'Example: Google acquiring YouTube (2006) bought a capability and user base that would have taken years to replicate.'},
+  {id:11, emoji:'➕', cat:'why', sz:'sm',
+   term:'Corporate Advantage Condition',
+   def:'Joint ownership only makes sense if the combined value exceeds the sum of independent values. Ownership ≠ synergy.',
+   extra:'When investors can diversify on their own, the parent must add operational synergy to justify owning both businesses.'},
+
+  // ---------- DEAL TYPES (types) ----------
+  {id:12, emoji:'↔️', cat:'types', sz:'lg',
+   term:'Horizontal M&A',
+   def:'Acquiring a competitor in the same industry at the same supply-chain stage — not just for scale but to remove excess capacity from the industry.',
+   extra:'Example: Disney acquiring 21st Century Fox (2019) — consolidating content and scale in media.'},
+  {id:13, emoji:'↕️', cat:'types', sz:'md',
+   term:'Vertical M&A',
+   def:'Acquiring a supplier (upstream) or distributor (downstream) to control more of the value chain.',
+   extra:'Example: Amazon acquiring Whole Foods (2017) — buying physical distribution and grocery supply.'},
+  {id:14, emoji:'🎲', cat:'types', sz:'md',
+   term:'Conglomerate M&A',
+   def:'Acquiring a company in an unrelated industry, purely for portfolio diversification.',
+   extra:'Example: Berkshire Hathaway\'s diversified acquisitions across insurance, rail, energy and consumer goods.'},
+  {id:15, emoji:'🌍', cat:'types', sz:'md',
+   term:'Market Extension (Geographic Roll-up)',
+   def:'Acquiring a company in a different geography that sells the same products — buying a new market footprint.',
+   extra:'Example: Walmart entering new country markets via acquisition of local retailers.'},
+  {id:16, emoji:'🧱', cat:'types', sz:'sm',
+   term:'Product Extension',
+   def:'Acquiring a company with complementary products serving the same customer market.',
+   extra:'Example: Google acquiring YouTube (2006) — adding video to its product set for the same audience.'},
+  {id:17, emoji:'🏁', cat:'types', sz:'sm',
+   term:'The "Race for Size"',
+   def:'Since the mid-1980s, globalization triggered a race for size across many industries — driving the long-run rise in deal volume and value.',
+   extra:'Number of completed deals worldwide rose dramatically 1985–2025, peaking in 2021 at 58,300 deals.'},
+
+  // ---------- M&A TRENDS (trends) ----------
+  {id:18, emoji:'🌊', cat:'trends', sz:'lg',
+   term:'M&A Comes in Waves',
+   def:'M&A activity is cyclical, not steady — it surges and collapses with macro conditions, cheap capital and industry shocks.',
+   extra:'Peak year 2021: 58,300 deals / $5.2tn. By 2025: ~39,500 deals / $4.0tn — well off the peak but still historically high.'},
+  {id:19, emoji:'🌐', cat:'trends', sz:'md',
+   term:'M&A Has Gone Global',
+   def:'Historically most M&A took place in the US. In recent years the volume of non-US deals has risen and now surpasses US deal volume.',
+   extra:'M&A activity now happens across all regions and sectors — it is a pervasive global phenomenon, not a US one.'},
+  {id:20, emoji:'📊', cat:'trends', sz:'md',
+   term:'TMT Leads by Value',
+   def:'Technology, Media & Telecom (TMT) is consistently the largest sector by deal value, ahead of industrials/chemicals and energy/mining.',
+   extra:'TMT deal value: $1,897bn in 2021, falling to $626bn in 2023, rebounding to $1,447bn in 2025 — the most volatile big sector.'},
+  {id:21, emoji:'🏛️', cat:'trends', sz:'sm',
+   term:'Megadeals',
+   def:'A handful of "megadeals" dominate value. The largest ever (inflation-adjusted) is Vodafone–Mannesmann (1999), ~$373bn.',
+   extra:'2024 top deal: ExxonMobil–Pioneer Natural Resources, $59.5bn. Megadeals concentrate risk — Bain urges focusing integration on key value drivers.'},
+  {id:22, emoji:'🧩', cat:'trends', sz:'sm',
+   term:'Bain 2026 M&A Agenda',
+   def:'Five priorities: (1) align M&A with strategy, (2) make megadeals work, (3) sharpen due diligence, (4) rebuild M&A muscles, (5) rethink capital allocation.',
+   extra:'"Rebuild M&A muscles": after years of low activity, teams are rusty — invest in people, playbooks and AI tools to move faster.'},
+
+  // ---------- WHY IT FAILS (fail) ----------
+  {id:23, emoji:'⚠️', cat:'fail', sz:'lg',
+   term:'Most M&A Destroys Value',
+   def:'More than 50% of firms lose value through M&A (short-term view). Acquirers frequently overpay and fail to capture promised synergies.',
+   extra:'Source: Aswath Damodaran (2008), "Valuation in Acquisitions." Poor M&A performance is also a leading cause of CEO departure (Booz-Allen & Hamilton).'},
+  {id:24, emoji:'🎣', cat:'fail', sz:'md',
+   term:'Pre-deal: Starting With the Target',
+   def:'A primary failure is starting with the target instead of the strategic rationale — leading to incomplete/unrealistic assessment of strategic fit, synergies and cultural fit.',
+   extra:'The fix is the discipline in Bain\'s agenda: prove the deal is the best use of capital and define synergies precisely before bidding.'},
+  {id:25, emoji:'🏆', cat:'fail', sz:'md',
+   term:'Winner\'s Curse',
+   def:'The tendency for the winning bid in an auction to exceed the intrinsic value of what is bought — driven by emotion, poor information and cognitive bias (pride, over-confidence).',
+   extra:'Buying an "iconic" company for prestige is a classic trigger — emotion pushes the price above any defensible synergy estimate.'},
+  {id:26, emoji:'🔧', cat:'fail', sz:'md',
+   term:'Post-deal: Poor Integration',
+   def:'Poor post-merger integration is the single biggest reason deals fail: weak leadership, planning, timing, attention to detail and no contingency plans.',
+   extra:'"Implementation is a process, not an event" — start early, treat integration as a full-time job, and avoid a leadership vacuum.'},
+  {id:27, emoji:'🪑', cat:'fail', sz:'sm',
+   term:'Underestimating Culture & Stakeholders',
+   def:'Two recurring post-deal killers: underestimating cultural differences, and neglecting key internal/external stakeholders.',
+   extra:'Culture clashes are a frequent stumbling block — "do not forget the key factor of success is people."'},
+
+  // ---------- PLAYBOOK & PEOPLE (play) ----------
+  {id:28, emoji:'📘', cat:'play', sz:'lg',
+   term:'New M&A Playbook: LBM vs RBM',
+   def:'Two distinct reasons to acquire:\n• LBM (Leverage my Business Model) — buy resources to boost current performance\n• RBM (Reinvent my Business Model) — use a separate model as a platform for transformative growth',
+   extra:'Diagnose first: are you boosting performance (LBM) or reinventing growth (RBM)? The whole integration approach flips depending on the answer.'},
+  {id:29, emoji:'🔩', cat:'play', sz:'md',
+   term:'LBM — Leverage my Business Model',
+   def:'Buy resources (talent, tech, customers) to raise prices or cut costs in your existing model. Integrate by folding the resources in.',
+   extra:'Warning: the market already prices in the upside, so it is easy to overpay. Cross-selling rarely works unless customers need both products at the same time.'},
+  {id:30, emoji:'🚀', cat:'play', sz:'md',
+   term:'RBM — Reinvent my Business Model',
+   def:'Target disruptive companies (simpler, cheaper, moving upmarket) and keep the acquired model SEPARATE — do not absorb it.',
+   extra:'High price tags are justified here: disruptors are persistently undervalued by conventional valuation.'},
+  {id:31, emoji:'🚗', cat:'play', sz:'md',
+   term:'The Daimler–Chrysler Lesson',
+   def:'Destroying a great business model during integration is a fatal mistake. Daimler folded Chrysler\'s brands, dealers, factories and tech into its own operations.',
+   extra:'That erased Chrysler\'s real value — its speedy processes and lean profit formula. Daimler should have preserved Chrysler\'s model as a separate entity.'},
+  {id:32, emoji:'🛠️', cat:'play', sz:'md',
+   term:'The M&A Process — 4 Stages',
+   def:'Strategy → Assessment → Execution → Integration.\n• Strategy: develop strategy, pick route, identify targets\n• Assessment: evaluate fit/synergies, select & approach target\n• Execution: due diligence, tax structuring, legal docs\n• Integration: integrate, sell off non-core, monitor vs plan',
+   extra:'Memory hook: "S-A-E-I." Use due diligence to validate synergy assumptions — not just to confirm a decision already made.'},
+  {id:33, emoji:'🗝️', cat:'play', sz:'sm',
+   term:'4 Keys to a Successful M&A',
+   def:'Three PRE-deal: strategic fit, cultural/organizational fit, the price paid. One POST-deal: managing the integration process.',
+   extra:'Prof. Xavier Mir: "M&A isn\'t just about money (price) and synergies (revenue & cost)… it\'s about people (cultural fit)."'},
+  {id:34, emoji:'🫂', cat:'play', sz:'sm',
+   term:'The Human Side: The Golf Swing',
+   def:'An acquisition breaches established arrangements and social norms — most people feel violated, not liberated. Emotions follow a grief curve: denial → anger → resistance → depression → hostile acceptance.',
+   extra:'The "golf swing": performance dips during implementation before recovering post-acquisition. Make key decisions quickly to limit the dip.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

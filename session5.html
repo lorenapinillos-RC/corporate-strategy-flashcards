@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 5 · Corporate Development — Organic Growth</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 5 · Corporate Development — Organic Growth</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Organic vs Inorganic</span>
+  <span class="leg why">Why Organic Growth</span>
+  <span class="leg types">Ways to Grow Organically</span>
+  <span class="leg trends">Resource Gap &amp; Choice</span>
+  <span class="leg fail">Limits &amp; Pitfalls</span>
+  <span class="leg play">Olam Case</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Organic vs Inorganic',
+  why:   'Why Organic Growth',
+  types: 'Ways to Grow Organically',
+  trends:'Resource Gap & Choice',
+  fail:  'Limits & Pitfalls',
+  play:  'Olam Case'
+};
+
+const cards = [
+  // ---------- ORGANIC VS INORGANIC (modes) ----------
+  {id:1, emoji:'🌱', cat:'modes', sz:'lg',
+   term:'What Is Organic Growth?',
+   def:'Growth a company achieves from its existing businesses rather than from newly acquired ones. It comes from:\n1. Existing products and services\n2. Internally developed new products/services\n3. Internally developed new businesses\n4. Any combination of the above',
+   extra:'Drives top-line (sales) and/or bottom-line (profit) growth. Also called internal growth — the opposite of inorganic (external, acquired) growth via M&A.'},
+  {id:2, emoji:'⚖️', cat:'modes', sz:'lg',
+   term:'Organic vs Inorganic Growth',
+   def:'Organic = grow from within, owning the new value chain and building resources from scratch without recourse to other firms. Inorganic = grow via mergers and acquisitions (external, acquired growth).',
+   extra:'Both develop the resources and capabilities needed to deliver a product/service to customers — the question is whether to build internally or use external relationships to access them.'},
+  {id:3, emoji:'🏗️', cat:'modes', sz:'md',
+   term:'Corporate Development Through Organic Growth',
+   def:'The process by which a company enters a new business on its own — through hiring, creation of a new project or business unit — owning the value chain of the new business and building its resources and capabilities without recourse to other firms.',
+   extra:'Prepared by Prof. Tamyko Ysa. Organic growth means full ownership and control of the new value chain.'},
+  {id:4, emoji:'🧭', cat:'modes', sz:'md',
+   term:'Three Strategy Methods',
+   def:'Firms can develop corporate resources three ways: internal (organic) development, alliances/partnerships, and M&A (acquisitions). Organic growth is the build route within this triad.',
+   extra:'Capron & Mitchell frame corporate development as resource development and acquisition — the right method depends on the strategic context.'},
+  {id:5, emoji:'🔁', cat:'modes', sz:'sm',
+   term:'Scaling Successful Innovations',
+   def:'Organic growth is more profitable and repeatable because it scales successful innovations and business models by leveraging the firm\'s core competences — its key sources of competitive advantage.',
+   extra:'Prepared by Prof. Dimo Ringov. Repeatability is what makes organic growth compound over time.'},
+
+  // ---------- WHY ORGANIC GROWTH (why) ----------
+  {id:6, emoji:'💎', cat:'why', sz:'lg',
+   term:'The Value Premium of Organic Growth',
+   def:'Many boards and investors prefer organic growth because it is more profitable and repeatable as it scales, and because most M&As do not create value for the acquiring firm.',
+   extra:'McKinsey: "the value premium of organic growth." Investors are weary of acquisitive growth — organic growers tend to be rewarded with higher valuations.'},
+  {id:7, emoji:'🛡️', cat:'why', sz:'md',
+   term:'Leverages Core Competences',
+   def:'Organic growth builds on the firm\'s existing core competences and sources of competitive advantage, rather than importing another firm\'s people, systems and culture.',
+   extra:'Internal development is faster and more effective when existing resources are similar to the ones needed and the firm outshines competitors in that area (Capron & Mitchell).'},
+  {id:8, emoji:'📊', cat:'why', sz:'md',
+   term:'M&A Poor Track Record',
+   def:'A core reason to prefer organic growth: M&As show a poor track record and most do not create value for the acquirer, so building can be the lower-risk path to durable returns.',
+   extra:'Capron & Mitchell: over half of managers blame implementation — 67% lack of people/skills, 50% poor ability to integrate acquired businesses.'},
+  {id:9, emoji:'🎯', cat:'why', sz:'md',
+   term:'Full Ownership and Control',
+   def:'Organic growth gives the firm full ownership of the new value chain and complete control over coordinating targeted and current resources — no partner conflict, no integration clash.',
+   extra:'Trade-off: control and repeatability come at the cost of speed; building from scratch is slower than buying.'},
+  {id:10, emoji:'🧮', cat:'why', sz:'sm',
+   term:'Asset-Light Compounding',
+   def:'Organic expansion can grow without substantial fixed-capital investment, generating returns on a light asset base — attractive capital spreads matter more than profit margins.',
+   extra:'Olam pre-IPO ran with less than 1% fixed assets on its balance sheet, financing growth on a shoestring while compounding intrinsic value.'},
+
+  // ---------- WAYS TO GROW ORGANICALLY (types) ----------
+  {id:11, emoji:'🚀', cat:'types', sz:'lg',
+   term:'Scaling Up & Leveraging Adjacencies',
+   def:'Generate organic growth along four vectors:\n• New Products/Services\n• New Customers\n• New Channels\n• New Geographies',
+   extra:'Leveraging adjacencies means extending from the core into closely related spaces where existing capabilities still give an edge.'},
+  {id:12, emoji:'🌳', cat:'types', sz:'lg',
+   term:'New Growth Platforms (NGPs)',
+   def:'NGPs extend corporate capabilities into new domains and whole families of products rather than just adding individual new products. Growth is about creating ecosystems of growth, not single product launches.',
+   extra:'Example: UPS built a Service Parts Logistics (SPL) platform. Success factors: CEO commitment (50%+ of time), independent but embedded NGP teams, strategic funding.'},
+  {id:13, emoji:'🛒', cat:'types', sz:'md',
+   term:'New Products and Services',
+   def:'Develop new offerings internally and sell them to existing or new customers — extending the product catalogue using the firm\'s own R&D and capabilities.',
+   extra:'Olam constantly asked "What else can we sell them?" — moving from cashews to cocoa because confectionery customers needed both.'},
+  {id:14, emoji:'🗺️', cat:'types', sz:'md',
+   term:'New Geographies',
+   def:'Replicate a proven business model into new countries and regions — entering markets on the firm\'s own, building local operations rather than acquiring them.',
+   extra:'Olam replicated its African farm-gate sourcing model into Indonesia, Vietnam, Thailand, China and Papua New Guinea from 1995.'},
+  {id:15, emoji:'🔗', cat:'types', sz:'md',
+   term:'New Channels and Customers',
+   def:'Reach new customer segments and use new routes to market — for example reversing an existing supply chain to distribute through infrastructure already in place.',
+   extra:'Olam used its African supply chain in reverse to import and distribute sugar, rice and dairy into Nigeria and Ghana.'},
+  {id:16, emoji:'🧬', cat:'types', sz:'sm',
+   term:'Repeatable Growth Formula',
+   def:'A codified, repeatable formula lets a firm scale organically: source many products from existing origins, sell new related products to existing customers, and focus differentially where capabilities give an edge.',
+   extra:'Verghese: this "repeatable growth formula" gave strategic clarity to employees and stakeholders and was a major accelerator of Olam\'s growth.'},
+
+  // ---------- RESOURCE GAP & CHOICE (trends) ----------
+  {id:17, emoji:'🕳️', cat:'trends', sz:'lg',
+   term:'Start With the Resource Gap',
+   def:'The first step is clarity on the resource gap: which resources and capabilities are needed but missing? The trade-offs in accessing them determine whether to build organically or grow inorganically.',
+   extra:'Key trade-offs: external availability, ease of copying, ease of catching up, ease of substituting (Capron & Mitchell, 2010).'},
+  {id:18, emoji:'❓', cat:'trends', sz:'lg',
+   term:'Build, Buy or Partner? — The Decision Framework',
+   def:'Capron & Mitchell\'s sequenced questions:\n1. Do you already have relevant resources? → build internally\n2. Do you and the provider share an understanding of value? → contract/license\n3. How deep a relationship? → alliance or acquisition',
+   extra:'M&A should be the FINAL choice in the sequence because acquiring and integrating a target consumes so many financial and managerial resources.'},
+  {id:19, emoji:'🌐', cat:'trends', sz:'md',
+   term:'Resource Test 1: Is It Available Externally?',
+   def:'Ask: are there partners or targets who already have the resource you need? If YES, growing inorganically (partner or acquire) is usually the better mode — building from scratch would be slower and wasteful.',
+   extra:'First of Capron & Mitchell\'s four trade-offs for closing a resource gap. External availability pushes you toward inorganic; the next three tests pull you back toward organic.'},
+  {id:20, emoji:'📋', cat:'trends', sz:'md',
+   term:'Resource Test 2: Is It Easy to Copy or Catch Up?',
+   def:'Ask two things: (a) Easy to copy? — no patents blocking it, it is codified, not locked in specific people. (b) Easy to catch up? — you own related resources, no increasing returns, and a fast "crash" programme could work. If YES, build it organically.',
+   extra:'When there is no second-mover disadvantage and no asset-mass efficiencies, the rival\'s head start is not decisive — so internal development beats paying an acquisition premium.'},
+  {id:21, emoji:'🔀', cat:'trends', sz:'md',
+   term:'Resource Test 3: Can You Substitute It?',
+   def:'Ask: could a different resource, or a functional equivalent you can develop yourself, do the same job as the partner\'s resource? If YES, you do not need to acquire — substitute or build internally instead.',
+   extra:'Source: Capron & Mitchell (2010), "Finding the Right Path." Together, Tests 1–3 form the build-vs-buy decision: external availability favours inorganic; easy-to-copy, easy-to-catch-up and easy-to-substitute each favour organic.'},
+  {id:22, emoji:'🧩', cat:'trends', sz:'sm',
+   term:'Multi-Method Approach',
+   def:'Firms that use all resource-acquisition methods (internal, alliance, M&A) outperform single-method firms. A multi-method approach is 46% more likely to ensure survival than relying mainly on alliances.',
+   extra:'Capron & Mitchell 10-year study of 162 telecom firms: only one-third actively used all methods; multi-method firms were 26% more likely to survive than M&A specialists, 12% more than internal-only.'},
+
+  // ---------- LIMITS & PITFALLS (fail) ----------
+  {id:23, emoji:'⚖️', cat:'fail', sz:'lg',
+   term:'The Growth-Expectations Gap',
+   def:'There is a structural gap between what growth investors expect a company to deliver and what organic growth can realistically produce. That pressure pushes firms into acquisitive growth — even though most M&A destroys value.',
+   extra:'Capron & Mitchell, "Finding the Right Path": this expectations gap, plus the poor M&A track record, is exactly why firms need a disciplined build-borrow-buy framework instead of defaulting to acquisitions.'},
+  {id:24, emoji:'📉', cat:'fail', sz:'md',
+   term:'Running Out of Headroom',
+   def:'Intrinsic organic growth slows as core businesses mature and gain number one or two positions in their markets — new opportunities then lie farther from the firm\'s roots.',
+   extra:'Verghese foresaw Olam\'s organic rate slowing as businesses "ran out of headroom", prompting a move down the value chain into ingredients.'},
+  {id:25, emoji:'🎯', cat:'fail', sz:'md',
+   term:'The Single-Method Trap',
+   def:'Most firms habitually reach for the same growth mode (usually M&A) for every gap, instead of asking which mode fits THIS resource. Picking the wrong mode is a costly misdiagnosis.',
+   extra:'Capron & Mitchell: when these deals fail, managers blame execution rather than the wrong mode choice — so they repeat the mistake and leave a lot of value on the table.'},
+  {id:26, emoji:'💸', cat:'fail', sz:'md',
+   term:'Capability Gaps Block the Build',
+   def:'Internal development fails when you lack the competences to absorb a resource: "the more data skills you have, the less intangible this know-how becomes."',
+   extra:'You need certain competencies before you can effectively acquire or build a technology — otherwise an alliance may be the better route (Capron & Mitchell).'},
+  {id:27, emoji:'⚠️', cat:'fail', sz:'sm',
+   term:'Crash Investment Programs',
+   def:'Trying to compress organic build through a "crash investment program" (e.g. spending $10m in one year instead of $1m/year over ten) often fails when asset stocks are interconnected and time-dependent.',
+   extra:'Asset-mass efficiencies and time-compression diseconomies mean money cannot always substitute for the slow accumulation of capabilities.'},
+
+  // ---------- OLAM CASE (play) ----------
+  {id:28, emoji:'🌍', cat:'play', sz:'lg',
+   term:'Olam International — From Nigeria to the World',
+   def:'In ~20 years CEO Sunny Verghese built Olam from a small Nigerian cotton export operation (founded 1989) into a global agri supply-chain leader: 20 products, 60 origin countries, 200,000 suppliers, FY2008 revenue S$8.1bn.',
+   extra:'Bell & Shelman, HBS 9-509-002. Sales and net profit grew at a CAGR of 53% and 48%; "Olam" means "transcending boundaries" in Hebrew.'},
+  {id:29, emoji:'🚜', cat:'play', sz:'md',
+   term:'Farm-Gate to Factory-Gate Model',
+   def:'Olam\'s organic engine: source agricultural commodities as close to the farm gate as possible, combine and process small lots to customer specs, and deliver to branded food companies — "the brand behind the brands."',
+   extra:'Customers like Nestlé, Kraft, Mars and Cadbury\'s; Olam built village agents, warehouses and transport to bypass middlemen and capture more of the profit pool.'},
+  {id:30, emoji:'👥', cat:'play', sz:'md',
+   term:'Olam HR Model — Grow Your Own',
+   def:'Recruit bright, hungry, entrepreneurial graduates from top schools; first assignment in Africa; develop them through three levels: individual contributor → profit-centre head → strategic leader. Promote from within.',
+   extra:'Two-thirds of new hires left in first two years (tough field conditions), but overall attrition ~10%; no loss among the top 20 managers in 10 years; employees owned ~16% of the company in 2008.'},
+  {id:31, emoji:'🔄', cat:'play', sz:'md',
+   term:'Olam Supplements Organic With M&A',
+   def:'After its 2005 IPO (S$0.62/share, raised S$228.4m) Olam adopted selective M&A to augment products/geographies, overcome bottlenecks, gain scale or skills, and learn new industries.',
+   extra:'Verghese expected inorganic growth to be 25–30% of Olam earnings by FY2011 — a deliberate blend of organic and inorganic, not a switch.'},
+  {id:32, emoji:'🏛️', cat:'play', sz:'md',
+   term:'Olam\'s Three Growth Pillars',
+   def:'Confirmed in the 2008 portfolio review:\n1. Establish broad leadership across the value chain in core products\n2. Look at Africa through a new lens\n3. Monetize "hidden assets" — up-country networks and risk-management capabilities',
+   extra:'Hidden-asset ideas: seasonal micro-credit to farmers, an African logistics network, a pastoral/agri-infrastructure fund — "incubate then spin off."'},
+  {id:33, emoji:'🤝', cat:'play', sz:'sm',
+   term:'Olam–Wilmar: Partnering, Not Buying',
+   def:'Olam formed a 50:50 JV (Nauvu Investments, 2008, ~US$244m) with Wilmar to invest in African palm and rubber — combining Olam\'s African execution with Wilmar\'s palm-oil scale.',
+   extra:'An alliance where neither could win alone: Wilmar had palm-oil scale but could not execute in Africa; Olam had deep on-the-ground African capability.'},
+  {id:34, emoji:'⚠️', cat:'play', sz:'sm',
+   term:'Olam\'s Integration & Culture Challenge',
+   def:'Olam learned that integrating acquisitions was complicated and could mean an initial clash of cultures — a hard-nosed thin-margin trading culture meeting traditional R&D-driven food businesses.',
+   extra:'On Universal Blanchers: "I told them it was our hope that they would Universal-ize us" — the goal was to learn from some acquisitions, not absorb them.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

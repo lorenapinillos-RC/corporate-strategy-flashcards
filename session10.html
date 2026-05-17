@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 10 · Corporate Entrepreneurship & CVC · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 10 · Corporate Entrepreneurship &amp; CVC</h1>
+  <p id="subtitle">28 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why &amp; Innovation</span>
+  <span class="leg types">Four Models</span>
+  <span class="leg trends">CVC Basics</span>
+  <span class="leg fail">CVC Structure</span>
+  <span class="leg play">Strategy &amp; Tensions</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why & Innovation',
+  types: 'Four Models',
+  trends:'CVC Basics',
+  fail:  'CVC Structure',
+  play:  'Strategy & Tensions'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🌱', cat:'modes', sz:'lg',
+   term:'Corporate Entrepreneurship — Definition',
+   def:'The process by which teams within an established company conceive, foster, launch and manage a new business that is distinct from the parent but leverages the parent\'s assets, market position, capabilities or other resources.',
+   extra:'Source: Wolcott & Lippitz, The Four Models of Corporate Entrepreneurship, MIT Sloan Management Review, 2007.'},
+  {id:2, emoji:'🔑', cat:'modes', sz:'md',
+   term:'Three Defining Elements',
+   def:'1. WITHIN an established company (not an external spin-off or investment)\n2. The business is DISTINCT (not incremental product improvement)\n3. It LEVERAGES the parent\'s resources (the parent adds value beyond capital)',
+   extra:'Element 3 is what separates corporate entrepreneurship from simply buying a start-up — the parent must bring something to the table beyond money.'},
+  {id:3, emoji:'🆚', cat:'modes', sz:'md',
+   term:'Corporate Entrepreneurship vs CVC',
+   def:'Corporate entrepreneurship builds a new internal business leveraging parent resources. Corporate Venture Capital predominantly pursues FINANCIAL investments in EXTERNAL companies.',
+   extra:'Both serve corporate strategy, but CE is inside-out (building) while CVC is outside-in (investing) — they can complement each other.'},
+  {id:4, emoji:'🍎', cat:'modes', sz:'sm',
+   term:'The iPod Lesson',
+   def:'Sony had the heritage, brand, technology and channels for portable digital music — yet Apple\'s Steve Jobs unlocked it by creating a new business, not just a better MP3 player.',
+   extra:'Wolcott & Lippitz open with this: established firms fail at corporate entrepreneurship not for lack of assets, but for lack of a model to create new businesses.'},
+  {id:5, emoji:'📉', cat:'modes', sz:'sm',
+   term:'Organic Growth Is Hard',
+   def:'When core businesses flag, fewer than 5% of companies regain growth rates of at least 1% above GDP — making creating new businesses a potent solution.',
+   extra:'Wolcott & Lippitz (2007): firms emphasising new business models grew operating margins faster than competitors.'},
+
+  // ---------- WHY & INNOVATION (why) ----------
+  {id:6, emoji:'😣', cat:'why', sz:'lg',
+   term:'The Innovation Paradox',
+   def:'Companies that try to innovate are very unhappy with the results. Almost 95% of managers express dissatisfaction with their innovation endeavours — high expectations turn unpredictable failures into poignant setbacks.',
+   extra:'Source: dobetter.esade.edu, "The crucial role of innovation and entrepreneurship in organizations", 27 Nov 2023.'},
+  {id:7, emoji:'⚖️', cat:'why', sz:'md',
+   term:'7 Paradoxes of Innovation',
+   def:'(1) Search while executing (2) Create new vs manage established products (3) Deliberate vs emergent strategy (4) Decentralized decisions vs transparency (5) One company, not one business model (6) Fail fast, make money (7) Impatient for profits, patient for growth.',
+   extra:'Source: Forbes, 30 August 2016. Hook for #7: pressure-test the business model first, avoid premature scaling.'},
+  {id:8, emoji:'🔓', cat:'why', sz:'md',
+   term:'Closed vs Open Innovation',
+   def:'CLOSED: all R&D internal, knowledge proprietary, "Not Invented Here" culture, value via patents/secrecy. OPEN: internal + external ideas combined, knowledge flows in and out, licensing/spinouts/partnerships, value via business-model design.',
+   extra:'Source: viima.com/blog/open-innovation. CVC is often described as an "open innovation" model.'},
+  {id:9, emoji:'🔄', cat:'why', sz:'md',
+   term:'Three Modes of Open Innovation',
+   def:'INBOUND (outside-in): enrich own knowledge from external sources. OUTBOUND (inside-out): let unused ideas flow out for licensing revenue. COUPLED (alliance-based): inbound + outbound through alliances and JVs.',
+   extra:'Inbound example: P&G\'s Connect+Develop. Outbound: IBM patent licensing, Qualcomm royalties. Coupled: pharma consortia, R&D joint ventures.'},
+  {id:10, emoji:'🧪', cat:'why', sz:'sm',
+   term:'Managing Innovation Is the Real Challenge',
+   def:'The need for innovation is widely acknowledged; the real challenge is managing it — moving beyond routine operations and dedicating time and resources to seek out new opportunities.',
+   extra:'Source: dobetter.esade.edu, 27 Nov 2023 — innovation\'s inherent unpredictability collides with high expectations.'},
+
+  // ---------- FOUR MODELS (types) ----------
+  {id:11, emoji:'🗺️', cat:'types', sz:'lg',
+   term:'The Four Models — Two Dimensions',
+   def:'Defined by two questions:\n• ORGANIZATIONAL OWNERSHIP — who owns creation of new businesses? Focused or Diffused\n• RESOURCE AUTHORITY — dedicated corporate "pot of money" or ad hoc funding?',
+   extra:'Source: Wolcott & Lippitz (2007). The 2x2 yields: Opportunist, Enabler, Advocate, Producer.'},
+  {id:12, emoji:'🎲', cat:'types', sz:'md',
+   term:'The Opportunist',
+   def:'Diffused ownership + ad hoc resources. No designated owner or budget; new businesses emerge from project champions who toil against the odds. All companies begin here.',
+   extra:'Wolcott & Lippitz: works only in trusting corporate cultures with diverse networks; firms outgrow it as they need more than a diffused, ad hoc approach.'},
+  {id:13, emoji:'🚦', cat:'types', sz:'md',
+   term:'The Enabler',
+   def:'Diffused ownership + dedicated resources. The premise: people will develop new ideas if given adequate support. The company provides funding and senior-management attention to grassroots projects.',
+   extra:'Wolcott & Lippitz call Google the poster child of the enabler model. Risk: enabler processes becoming bureaucratic, or conflict with established businesses.'},
+  {id:14, emoji:'📢', cat:'types', sz:'md',
+   term:'The Advocate',
+   def:'Focused ownership + ad hoc resources. Funding is not the issue; the company assigns organizational ownership to an evangelist group that acts as innovation expert and coach, while business units fund projects.',
+   extra:'Wolcott & Lippitz: the best advocates come from within the company; the advocate model suits firms creating new businesses close to established divisions.'},
+  {id:15, emoji:'🏭', cat:'types', sz:'sm',
+   term:'The Producer',
+   def:'Focused ownership + dedicated resources. A full-time group with a dedicated budget pursues corporate entrepreneurship, encouraging latent entrepreneurs while protecting cross-unit projects.',
+   extra:'Wolcott & Lippitz cite IBM and Motorola; strong CEO support is critical for the producer model to succeed.'},
+  {id:16, emoji:'🪜', cat:'types', sz:'sm',
+   term:'Evolving Beyond the Opportunist',
+   def:'All firms start as opportunists; to be reliable, corporate entrepreneurship must evolve into a more deliberate model — enabler, advocate or producer — matched to objectives.',
+   extra:'Wolcott & Lippitz: the framework helps companies avoid costly trial-and-error in selecting and constructing the right program.'},
+
+  // ---------- CVC BASICS (trends) ----------
+  {id:17, emoji:'💸', cat:'trends', sz:'lg',
+   term:'What Is Venture Capital?',
+   def:'Financing provided to early-stage, high-growth-potential firms as an equity investment in stock that is essentially illiquid until the company matures (5–8 years). In exchange for high risk, VCs become actively engaged — board seat, strategic advisor, significant control.',
+   extra:'"The void filled by VC — liquidity in a world of risk." VC helps startups cross the "Death Valley" (NVCA 2019 Yearbook).'},
+  {id:18, emoji:'🔁', cat:'trends', sz:'md',
+   term:'The Stages of the VC Cycle',
+   def:'1. Raise a venture fund with a set time horizon (Limited Partnership: investors as LPs, firm as GP)\n2. Build a portfolio (reserve 3–4x first investment for follow-ons)\n3. Monitor and add value (board seats, introductions, operational support)\n4. Generate superior return via timely exits.',
+   extra:'Each fund/portfolio is a separate partnership. The "tail-end" question: how quickly can VCs exit, and why would buyers buy a company a VC is dropping?'},
+  {id:19, emoji:'🏢', cat:'trends', sz:'md',
+   term:'Where CVC Units Fit In',
+   def:'Like independent VCs, CVC units seek a financial return. Unlike them, CVCs have a strategic mission to "grow the business" of the parent — gaining access to new ideas, technologies, products, processes or markets.',
+   extra:'Source: MacMillan et al. (2008). CVCs can acquire a "real option" on a technology or market, complementing alliances and JVs.'},
+  {id:20, emoji:'📈', cat:'trends', sz:'sm',
+   term:'Corporate Venturing Is Growing',
+   def:'As of 2023, CVCs participated in nearly half of all deals in the United States, operating across many stages and sectors including AI, aerospace and climate tech.',
+   extra:'Source: NVCA 2024 Report, pp. 23–24. Despite marginal cooling, CVCs intend to remain significant market players.'},
+  {id:21, emoji:'📦', cat:'trends', sz:'sm',
+   term:'Amazon Industrial Innovation Fund',
+   def:'A $1bn venture investment program (launched 2022) making direct investments in emerging tech to drive warehouse automation and supply-chain innovation.',
+   extra:'Source: FT / aboutamazon.com. Investments include Rightbot (container unloading) and Instock (robotic storage & retrieval); led by Franziska Bossart.'},
+
+  // ---------- CVC STRUCTURE (fail) ----------
+  {id:22, emoji:'🎯', cat:'fail', sz:'lg',
+   term:'CVC: Strategic or Financial Value?',
+   def:'CVC units pursue a dual mandate — financial returns (like independent VCs) AND strategic benefits for the parent. The balance struck shapes governance, incentives and how success is measured.',
+   extra:'Source: Survey of Corporate Venture Capital (2007). Many CVCs invest in areas outside the parent\'s core.'},
+  {id:23, emoji:'🏗️', cat:'fail', sz:'md',
+   term:'How Are CVCs Structured?',
+   def:'CVC units vary in structure — from wholly internal corporate funds to externally managed or hybrid vehicles — affecting their autonomy, speed and alignment with the parent.',
+   extra:'Source: NVCA CVC Survey (2012). Structure choice trades off strategic alignment against venture-market credibility.'},
+  {id:24, emoji:'🧑‍💼', cat:'fail', sz:'md',
+   term:'To Whom Do CVCs Report?',
+   def:'Reporting lines shape a CVC\'s mandate and influence — whether it answers to corporate development, a business unit, the CFO or the CEO determines how strategic-vs-financial tensions are resolved.',
+   extra:'Source: Survey of Corporate Venture Capital (2007). Reporting structure signals whether strategic or financial goals dominate.'},
+  {id:25, emoji:'🛟', cat:'fail', sz:'sm',
+   term:'Support to Portfolio Companies',
+   def:'Beyond capital, CVCs provide operational and strategic support to portfolio companies — leveraging the parent\'s assets, expertise and reach.',
+   extra:'Source: Survey of Corporate Venture Capital (2007). This support is the parent\'s distinctive edge over traditional VCs.'},
+  {id:26, emoji:'🚪', cat:'fail', sz:'sm',
+   term:'Strategic Access Provided',
+   def:'CVCs offer portfolio companies strategic access — to the parent\'s customers, channels, technology and markets — that independent VCs typically cannot match.',
+   extra:'Source: Survey of Corporate Venture Capital (2007). Strategic access is a key reason a startup chooses a corporate investor.'},
+
+  // ---------- STRATEGY & TENSIONS (play) ----------
+  {id:27, emoji:'❓', cat:'play', sz:'lg',
+   term:'CVC — The Key Corporate-Strategy Question',
+   def:'Does the presence of a CVC improve the competitiveness of the PARENT? Alternatively: does the CVC unit hold a competitive advantage in its own space (vs other CVCs and traditional VCs) thanks to its affiliation with the parent?',
+   extra:'Source: CVCs Wrap-Up. CVCs play a unique role because they promote investments typically outside the parent\'s scope.'},
+  {id:28, emoji:'⚙️', cat:'play', sz:'md',
+   term:'CVC Tensions & Governance',
+   def:'CVCs can create tension in corporate culture, incentive systems, resource allocation and diversification. The fix: appropriate governance, performance objectives defined at parent level, and observable metrics so stakeholders can gauge value-add.',
+   extra:'Source: CVCs Wrap-Up. Without value-add metrics, stakeholders cannot judge whether the CVC earns its place in the portfolio.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

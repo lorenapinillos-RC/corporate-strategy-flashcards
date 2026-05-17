@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 2 · Corporate Governance & Firm Ownership · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 2 · Corporate Governance &amp; Firm Ownership</h1>
+  <p id="subtitle">30 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">What CG Is</span>
+  <span class="leg why">Why It Matters</span>
+  <span class="leg types">Ownership Types</span>
+  <span class="leg trends">Models &amp; Trends</span>
+  <span class="leg fail">Risks &amp; Conflicts</span>
+  <span class="leg play">The Board &amp; People</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'What CG Is',
+  why:   'Why It Matters',
+  types: 'Ownership Types',
+  trends:'Models & Trends',
+  fail:  'Risks & Conflicts',
+  play:  'The Board & People'
+};
+
+const cards = [
+  // ---------- WHAT CG IS (modes) ----------
+  {id:1, emoji:'⚖️', cat:'modes', sz:'lg',
+   term:'Corporate Governance — Definition',
+   def:'"A system of rules, practices, and processes by which a company is directed and controlled." It involves the relationships between a company\'s management, its board, its shareholders and other stakeholders.',
+   extra:'Source: OECD Principles of Corporate Governance (2004), cited in Prof. Guillermo Font\'s Session 2 deck.'},
+  {id:2, emoji:'🧱', cat:'modes', sz:'lg',
+   term:'7 Main Elements of CG',
+   def:'1. Shareholder rights (incl. minority protection)\n2. Board of Directors (oversight & direction)\n3. Corporate ethics (integrity, transparency)\n4. Regulations & standards (legal/accounting)\n5. Transparency & disclosure\n6. Risk management & internal control\n7. Stakeholder interests',
+   extra:'These elements operationalise the OECD definition into what a board must actually safeguard day to day.'},
+  {id:3, emoji:'🪞', cat:'modes', sz:'md',
+   term:'Governing vs Managing',
+   def:'"There is a radical difference between controlling the activities of an organization and performing these activities." Governance = directing and controlling; management = executing.',
+   extra:'Attributed to J.S. Mill (1867) in the deck. The Board plus Executive Management together form the Leadership Team.'},
+  {id:4, emoji:'🔗', cat:'modes', sz:'md',
+   term:'CG Mechanisms (Tricker)',
+   def:'CG is not just the board: it encompasses corporate boards plus laws, accounting standards and ethical norms that regulate corporate life — internal and external mechanisms together.',
+   extra:'Adapted from Tricker, R. I. (2015), Corporate Governance: Principles, Policies, and Practices, Oxford University Press.'},
+  {id:5, emoji:'🌐', cat:'modes', sz:'sm',
+   term:'Stakeholder View of the Firm',
+   def:'A stakeholder is any group or individual with an interest in the firm that can affect or be affected by it: owners, managers, employees, customers, suppliers, creditors, regulators, communities and nature.',
+   extra:'Stakeholder framing attributed to R. Aguilera in the deck; relevant because most firms worldwide have a controlling owner, not dispersed ownership.'},
+
+  // ---------- WHY IT MATTERS (why) ----------
+  {id:6, emoji:'❓', cat:'why', sz:'lg',
+   term:'Why CG Is Important',
+   def:'Corporations hold significant power in society. Good governance ensures value for shareholders AND stakeholders; poor governance can trigger financial crises and loss of public trust.',
+   extra:'Key challenge from the deck: "Balancing corporate autonomy with social & legal responsibility."'},
+  {id:7, emoji:'🎭', cat:'why', sz:'lg',
+   term:'The Agency Problem',
+   def:'Conflicts of interest between the "principal" (shareholders) and the "agent" (managers) arising from the separation of ownership and management.',
+   extra:'Parada & Garcia Fau (Harvard Deusto): this is the classic but "simplistic" explanation of why CG is needed — Berle & Means first studied this separation in the US.'},
+  {id:8, emoji:'💸', cat:'why', sz:'md',
+   term:'Internal Coordination Costs',
+   def:'Inside the firm, governance must absorb information-processing costs plus agency costs — namely monitoring costs, bonding costs and residual loss.',
+   extra:'From the deck\'s transaction-cost map: firm-domain costs vs market-domain (search, negotiation, contract enforcement) costs.'},
+  {id:9, emoji:'🪜', cat:'why', sz:'md',
+   term:'Conglomerate Discount',
+   def:'The stock market often values a diversified group below the sum of its parts. A highly diversified US firm shows an average ~20% long-run valuation discount vs a focused peer.',
+   extra:'Parada & Garcia Fau: UK discount ~15%, Japan ~10%, German conglomerates ~0% (dual-board model limits managerial discretion).'},
+  {id:10, emoji:'🧭', cat:'why', sz:'sm',
+   term:'Strategy Is Non-Delegable',
+   def:'Corporate strategy is a non-delegable responsibility of the board; ~two-thirds of a company\'s long-term share value reflects future growth expectations.',
+   extra:'Parada & Garcia Fau, "How the Board of Directors Should Handle Strategy," Harvard Deusto Business Review.'},
+
+  // ---------- OWNERSHIP TYPES (types) ----------
+  {id:11, emoji:'📈', cat:'types', sz:'lg',
+   term:'Public (Listed) Companies',
+   def:'Listed on stock exchanges with public shareholders. Pros: access to capital, visibility, liquidity. Cons: short-term earnings pressure, regulatory burden, activism, exposure to market sentiment.',
+   extra:'Deck examples: Apple, Amazon, Microsoft, Alphabet, Alibaba. Board and executives accountable to shareholders and the public.'},
+  {id:12, emoji:'🏠', cat:'types', sz:'md',
+   term:'Private Companies',
+   def:'Owned by individuals, partners or private investment groups. More flexible, less regulated, faster decisions and privacy — but limited access to external capital and shareholder liquidity.',
+   extra:'Deck examples: Cargill, Koch Industries, PwC, Deloitte.'},
+  {id:13, emoji:'👨‍👩‍👧', cat:'types', sz:'md',
+   term:'Family Businesses',
+   def:'Controlled by one or more families. Strengths: long-term view, loyalty, continuity. Risks: nepotism, conflict, limited external capital. Succession and generational transition are the critical governance issues.',
+   extra:'Deck examples: Walmart, Samsung, Ford, BMW, Koch Industries. Family Business CG adds a Family Council, Family Assembly and Family Office.'},
+  {id:14, emoji:'🏛️', cat:'types', sz:'md',
+   term:'State-Owned Enterprises (SOEs)',
+   def:'Owned and controlled by government, often with a public-interest mandate alongside profit. Pros: state backing, strategic reach. Cons: political interference, weak market discipline, transparency concerns.',
+   extra:'Deck examples: China National Petroleum, Saudi Aramco, Gazprom, China Mobile, EDF (France).'},
+  {id:15, emoji:'💼', cat:'types', sz:'md',
+   term:'Private Equity Ownership',
+   def:'"DNA: Buy to Sell." PE firms invest pooled institutional capital, drive improvements and growth, then sell the stake at a profit. Hands-on, providing capital plus expertise.',
+   extra:'Pooled funds from pension funds, endowments, insurers and HNW individuals; firms ranked by Assets Under Management (AUM).'},
+  {id:16, emoji:'🕊️', cat:'types', sz:'sm',
+   term:'NGOs / Non-Profits',
+   def:'Mission-driven, not profit-driven. Governed by a board of directors or trustees, often with more democratic structures. Transparency and accountability are fundamental given the mission.',
+   extra:'Deck examples: Amnesty International, MSF, WWF, Oxfam, Human Rights Watch. Main risk: donor-funding dependency and mission drift.'},
+
+  // ---------- MODELS & TRENDS (trends) ----------
+  {id:17, emoji:'🗺️', cat:'trends', sz:'lg',
+   term:'Four Models of Capitalism',
+   def:'• LME — liberal market, shareholder-focused (USA, UK, Canada)\n• CME — coordinated, firm/govt/labour ties (Germany, Japan, Sweden)\n• FLME — family-led, hereditary (Italy, South Korea, Brazil)\n• SLME — state-led, govt influence (China, Russia, Malaysia)',
+   extra:'Source: Aguilera & Judge (2014), "Who Will Guard the Guardians? International Corporate Governance" (Ivey 9B14M148).'},
+  {id:18, emoji:'⚖️', cat:'trends', sz:'md',
+   term:'LME vs CME',
+   def:'LMEs coordinate via markets and hierarchies: large stock markets, common law, strong shareholder rights, open labour markets, short-term pay. CMEs use non-market relationships, bank finance, coordinated labour and long-term horizons.',
+   extra:'Aguilera & Judge: no single model is "better"; governance practices align with the national institutional environment.'},
+  {id:19, emoji:'🏢', cat:'trends', sz:'md',
+   term:'Dual-Board (Two-Tier) System',
+   def:'Codetermination: a supervisory board (including employee representatives) oversees a separate management board — limiting managerial freedom.',
+   extra:'German model and Japanese Keiretsu model in the deck; Parada notes German conglomerates show essentially no conglomerate discount because of this structure.'},
+  {id:20, emoji:'🔄', cat:'trends', sz:'md',
+   term:'Evolution of Corporate Governance',
+   def:'Shifts: digital meetings vs printed reports; more diverse boards; greater ESG and accountability focus; collaborative (not top-down) strategy; cyber risk as a priority; holistic, not purely financial, compensation.',
+   extra:'From the deck\'s "Evolution Corporate Governance" slide — governance is moving toward stakeholder balance and long-term sustainability.'},
+  {id:21, emoji:'🌍', cat:'trends', sz:'sm',
+   term:'No Global Convergence',
+   def:'Country-specific governance is historically determined by economic, political and social development; practices complement each other and align with national institutions — they will not all converge to one model.',
+   extra:'Three core ideas of Aguilera & Judge (2014); CG matters for both domestic and multinational firms.'},
+
+  // ---------- RISKS & CONFLICTS (fail) ----------
+  {id:22, emoji:'⚠️', cat:'fail', sz:'lg',
+   term:'Where Boards Destroy Value',
+   def:'The major value-creating OR value-destroying processes are accelerated-growth decisions that change the perimeter of the firm: diversification (horizontal/vertical), geographic expansion, and M&A or alliances.',
+   extra:'Parada & Garcia Fau: these take firms outside what they know — natural board territory; external "pressure to grow" is hard to resist.'},
+  {id:23, emoji:'🥊', cat:'fail', sz:'md',
+   term:'Proxy Fights & Reference Shareholders',
+   def:'When value is destroyed, reference shareholders (families, institutions, governments) intervene and demand change. In proxy fights, activists challenge strategy advised by proxy advisors; management by proxy lawyers.',
+   extra:'Parada & Garcia Fau: a key correction mechanism, alongside government veto rights and family intervention.'},
+  {id:24, emoji:'🎯', cat:'fail', sz:'md',
+   term:'Market for Corporate Control',
+   def:'A second correction mechanism: a takeover bid (hostile or friendly) for a listed firm to correct strategy; for private firms, a competitor or PE leveraged buyout — or an investor who slices and sells the company.',
+   extra:'Parada & Garcia Fau, Harvard Deusto: discipline imposed externally when internal governance fails.'},
+  {id:25, emoji:'🪑', cat:'fail', sz:'md',
+   term:'Chairman = CEO (Duality)',
+   def:'When the Chairman is also the CEO, "the executor supervises himself." The UK code recommends separating the roles, which is linked to its smaller conglomerate discount.',
+   extra:'Deck poses this directly; Parada & Garcia Fau use it to explain cross-country differences in value destruction.'},
+  {id:26, emoji:'🧑‍⚖️', cat:'fail', sz:'sm',
+   term:'Fiduciary Duties of Directors',
+   def:'Vary by jurisdiction but typically: Duty of Care (diligent, informed decisions), Duty of Loyalty (company before self), Duty of Good Faith (ethical, lawful), Duty of Oversight (compliance, risk, sustainability).',
+   extra:'From the deck; breaching these is the legal core of governance failure and director liability.'},
+
+  // ---------- THE BOARD & PEOPLE (play) ----------
+  {id:27, emoji:'🏛️', cat:'play', sz:'lg',
+   term:'Five Priorities of the Governing Body',
+   def:'1. Manage the board itself (appointments, structure)\n2. Approve mission, vision, strategy, key policies, budget, accounts\n3. Select, supervise, support and evaluate management\n4. Safeguard assets, control risk, protect stakeholder rights\n5. Represent the entity and develop future opportunities',
+   extra:'From Prof. Font\'s deck — the board\'s job description; "Noses in, fingers out" (Parada & Garcia Fau) captures the supervisory stance.'},
+  {id:28, emoji:'👥', cat:'play', sz:'md',
+   term:'Director Types',
+   def:'• Proprietary — represent majority shareholders\n• Independent — no ties, objective external view, protect minorities\n• Lead Independent Director (LID) — coordinates independents, runs sessions without executives\n• Executive — part of daily management (e.g. CEO-director)\n• Delegated — represent specific groups (e.g. unions)',
+   extra:'Deck taxonomy; regulation sets a minimum proportion of independent directors with strict independence criteria and periodic rotation.'},
+  {id:29, emoji:'🗂️', cat:'play', sz:'md',
+   term:'Board Committees',
+   def:'Executive (urgent decisions on behalf of board), Audit (financial reports, auditor independence, compliance), Nomination (director profiles, succession), Remuneration (pay policy), plus Risk/ESG/Strategy/Ethics committees.',
+   extra:'The Audit Committee monitors financial AND non-financial risk — sustainability, cyber, compliance, reputation, tax (Parada & Garcia Fau).'},
+  {id:30, emoji:'🤝', cat:'play', sz:'md',
+   term:'Advising vs Control Roles',
+   def:'Control role (Agency Theory): retrospective, mandatory, formal, periodic. Advice role (Resource Dependence Theory): prospective, voluntary, informal, as-needed and collaborative.',
+   extra:'Deck links the two theoretical lenses; board attributes (composition, structure, process, roles) shape firm performance — Johnson et al. (1996); Zahra & Pearce II (1989).'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

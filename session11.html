@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sessions 11–12 · Corporate Strategy & Sustainability · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Sessions 11–12 · Corporate Strategy &amp; Sustainability</h1>
+  <p id="subtitle">34 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why It Matters</span>
+  <span class="leg types">Planetary Boundaries</span>
+  <span class="leg trends">ESG &amp; Regulation</span>
+  <span class="leg fail">Strategy &amp; Value</span>
+  <span class="leg play">BBVA Case</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why It Matters',
+  types: 'Planetary Boundaries',
+  trends:'ESG & Regulation',
+  fail:  'Strategy & Value',
+  play:  'BBVA Case'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🌍', cat:'modes', sz:'lg',
+   term:'Corporate Sustainability — Why It Is a Strategy Issue',
+   def:'Sustainability is no longer a side activity or CSR add-on — it is a corporate-strategy question about how the firm creates and protects value over the long term.\n• From managing organizations… to managing the Earth system\n• From shareholder value (20th C.) to value for all stakeholders (21st C.)',
+   extra:'Deck framing: 20th-century model = linear, extractive, fossil, exclusive; 21st-century model = circular, regenerative, renewable, inclusive (Sessions 11 & 12, Prof. Guillermo Font / adapted from Prof. Emma Felipe).'},
+  {id:2, emoji:'🗺️', cat:'modes', sz:'md',
+   term:'Context Is the Key',
+   def:'Understanding sustainability starts with context — the maps we use shape the decisions we make. Mercator\'s map distorts size; a GDP map distorts whose economy "matters".',
+   extra:'"Context is the key – from that comes the understanding of everything." – Kenneth Noland (opening quote, Sessions 11 & 12 deck).'},
+  {id:3, emoji:'🚀', cat:'modes', sz:'md',
+   term:'The Great Acceleration',
+   def:'Since ~1950 socio-economic trends (GDP, population, energy, transport) and Earth-system trends (CO2, biosphere degradation, ocean acidification) have surged together on near-vertical curves.',
+   extra:'Framework from Roman Krznaric, The Good Ancestor: How to Think Long Term in a Short-Term World (2021); original IGBP Great Acceleration dashboards (igbp.net).'},
+  {id:4, emoji:'⏳', cat:'modes', sz:'md',
+   term:'The Anthropocene',
+   def:'A proposed epoch in which humanity itself has become a planetary-scale geological force — implying a new, global-level responsibility for the Earth system.',
+   extra:'"In a single lifetime, humanity has become a geological force at the planetary scale… humanity has a new responsibility at a global level for the planet." – Will Steffen (2023).'},
+  {id:5, emoji:'🪟', cat:'modes', sz:'sm',
+   term:'The Window Is Closing',
+   def:'The deck warns the window for action is closing: heat days above 35°C are rising, and a 1.5°C→3.1°C world threatens homes for 4.4 billion city dwellers.',
+   extra:'~50% of the world population lives in big cities; FT (Oct 2024) on prolonged urban heatwaves, chronic illness and skyrocketing cooling demand.'},
+  {id:6, emoji:'🧑‍🌾', cat:'modes', sz:'sm',
+   term:'The Green Talent Gap',
+   def:'Between 2023 and 2024 global demand for green talent grew 11.6% but supply grew only 5.5% — the gap is widening and accelerating.',
+   extra:'The green talent pool must roughly double by 2050 or sustainability goals are at risk. Source: LinkedIn Economic Graph (Sessions 11 & 12 deck).'},
+
+  // ---------- WHY IT MATTERS (why) ----------
+  {id:7, emoji:'🌪️', cat:'why', sz:'lg',
+   term:'Resilience in a Hotter World',
+   def:'Wild weather and rising resource demand call for a fundamentally new strategy. Climate shocks already hit earnings: 2011 Thailand floods cut Toyota production and caused a ~$1.5bn earnings hit; Hurricane Sandy (2012) cost Con Edison $500m+ and NY business $6bn.',
+   extra:'Andrew Winston, "Resilience in a Hotter World," Harvard Business Review (April 2014); author of The Big Pivot. Commodity price rises have erased a century of declines (McKinsey Global Institute).'},
+  {id:8, emoji:'🎯', cat:'why', sz:'md',
+   term:'The Big Pivot',
+   def:'Vanguard firms make a "big pivot": fight short-termism, set science-based goals, pursue radical innovation, put a value on natural capital, and collaborate with governments, NGOs, peers and customers.',
+   extra:'Winston (HBR 2014): "An extreme world calls for extreme change" — incremental energy-efficiency wins are now just table stakes.'},
+  {id:9, emoji:'📉', cat:'why', sz:'md',
+   term:'Climate Change Already Hits the Economy',
+   def:'Climate change is already affecting the economy through higher temperatures, higher food prices and higher inflation — and global temperature rise is projected to drag down GDP.',
+   extra:'Potsdam Institute for Climate Impact Research (PIK, 2024 working paper) on the macroeconomic effects of climate change.'},
+  {id:10, emoji:'⚖️', cat:'why', sz:'md',
+   term:'Sustainability as Economic Resilience',
+   def:'A green economy is no longer just about climate pledges — it is about economic resilience. Climate shocks disrupt supply chains, biodiversity loss threatens food security, resource shortages destabilize markets.',
+   extra:'"In the next decade, sustainability won\'t be a competitive advantage. It will be the foundation of survival." – WEF Global Risks Report 2026 (15 Jan 2026), insights from 1,300+ global leaders.'},
+  {id:11, emoji:'🛡️', cat:'why', sz:'sm',
+   term:'Tragedy of the Horizon',
+   def:'Climate risks materialize beyond the typical horizons of business, politics and central banks — so by the time they bite, it is too late to act cheaply.',
+   extra:'Mark Carney, then Chair of the Financial Stability Board & Governor of the Bank of England (2015), coined "Tragedy of the Horizon".'},
+  {id:12, emoji:'🐠', cat:'why', sz:'sm',
+   term:'Climate Tipping Points',
+   def:'There is growing evidence we are close to or beyond tipping points in key Earth-system parts — warm-water coral reefs, the Amazon rainforest, and the West Antarctic and Greenland ice sheets.',
+   extra:'William Ripple (2021); the Global Tipping Points report (2023) identifies 25+ tipping points; FT (2025) calls coral-reef collapse Earth\'s first climatic tipping point.'},
+
+  // ---------- PLANETARY BOUNDARIES (types) ----------
+  {id:13, emoji:'🪐', cat:'types', sz:'lg',
+   term:'The 9 Planetary Boundaries',
+   def:'A "safe operating space for humanity" defined by nine global processes that regulate Earth\'s stability:\n1 Climate change · 2 Biodiversity loss · 3 Biogeochemical flows (N & P) · 4 Land-system change · 5 Freshwater use · 6 Ocean acidification · 7 Atmospheric aerosol loading · 8 Stratospheric ozone depletion · 9 Novel entities',
+   extra:'First proposed in 2009 by 28 scientists led by Johan Rockström; all nine quantified in 2023. Stockholm Resilience Centre / Potsdam Institute Planetary Health Check.'},
+  {id:14, emoji:'🚨', cat:'types', sz:'lg',
+   term:'7 of 9 Boundaries Crossed (2025)',
+   def:'The 2023 update concluded six of nine boundaries were transgressed. The 2025 Planetary Health Check shows ocean acidification breached for the first time — bringing the total to 7 of 9 boundaries crossed.',
+   extra:'Crossing boundaries raises the risk of large-scale, abrupt or irreversible change. Stockholm Resilience Centre (2025); analysis in Sakschewski and Caesar et al. 2025.'},
+  {id:15, emoji:'🌡️', cat:'types', sz:'md',
+   term:'Climate Change Boundary',
+   def:'Greenhouse gases and aerosols trap heat that would otherwise escape to space; the boundary tracks the change in Earth\'s incoming/outgoing energy ratio. Transgressed, with CO2 still rising.',
+   extra:'One of the two "core" boundaries (with biosphere integrity) whose breach alone could drive the Earth system into a new state. Stockholm Resilience Centre (2025).'},
+  {id:16, emoji:'🌊', cat:'types', sz:'md',
+   term:'Ocean Acidification Boundary',
+   def:'As oceans absorb atmospheric CO2 their pH falls, harming shell- and skeleton-building organisms and weakening the ocean carbon sink.',
+   extra:'The 2025 Planetary Health Check showed the ocean acidification boundary breached for the first time since the start of the industrial era (Stockholm Resilience Centre, 2025).'},
+  {id:17, emoji:'🧪', cat:'types', sz:'md',
+   term:'Novel Entities Boundary',
+   def:'Synthetic chemicals, plastics, and engineered materials and organisms released without adequate safety testing place "novel entities" deep in the high-risk zone.',
+   extra:'Among the most strongly transgressed boundaries — the sheer volume of new substances outpaces our ability to assess their Earth-system effects (Stockholm Resilience Centre, 2025).'},
+  {id:18, emoji:'🔗', cat:'types', sz:'sm',
+   term:'Boundaries Are Interdependent',
+   def:'Planetary boundaries cannot be considered in isolation: acting on one process changes the risk of the others. Only by respecting all nine do we keep the safe operating space.',
+   extra:'Companies such as Kering map their footprint against the nine boundaries; the 2018 Amsterdam Circular study applies the logic at city scale.'},
+
+  // ---------- ESG & REGULATION (trends) ----------
+  {id:19, emoji:'📊', cat:'trends', sz:'lg',
+   term:'Materiality & ESG — Origin',
+   def:'In 2004 UN Secretary-General Kofi Annan asked ~50 global CEOs to support sustainability. Two concepts emerged: (1) materiality — social/environmental issues have a material impact on business and vice versa; (2) ESG metrics to track that materiality.',
+   extra:'Once niche, materiality and Environmental, Social & Governance metrics are now central to corporate reporting and investment (FT; Sessions 11 & 12 deck).'},
+  {id:20, emoji:'🇪🇺', cat:'trends', sz:'md',
+   term:'The European Green Deal & Regulatory Tsunami',
+   def:'The EU Green Deal (2019) launched a wave of binding rules — a "regulatory tsunami" — pushing companies from voluntary disclosure to mandatory, audited evidence.',
+   extra:'Parallel moves: the US "Green New Deal" debate and China\'s Global Sustainable Development Initiative (2021). The deck frames this as the EU "regulatory tsunami".'},
+  {id:21, emoji:'🔍', cat:'trends', sz:'md',
+   term:'CSDDD — Due Diligence on Human Rights',
+   def:'Under the Corporate Sustainability Due Diligence Directive companies must identify, prevent and remedy human-rights and environmental harm across the entire value chain — and prove it with an audit trail, not just disclose it.',
+   extra:'"From disclosure to evidence." The supply chain becomes a front-line test for market access and a chance for competitive differentiation (Prof. Emma Felipe; Norton Rose Fulbright; BSR).'},
+  {id:22, emoji:'🪪', cat:'trends', sz:'md',
+   term:'Digital Product Passport',
+   def:'Every product sold in the EU will need a digital passport covering material origin, recyclability and carbon footprint at the product level — ending supply-chain opacity.',
+   extra:'Part of the EU shift "from disclosure to evidence": prove it, do not just claim it (Sessions 11 & 12 deck, source Prof. Emma Felipe).'},
+  {id:23, emoji:'⚖️', cat:'trends', sz:'sm',
+   term:'Climate Change Litigation',
+   def:'Climate litigation is rising fast and is enforced very differently by geography — ESG is shaped through litigation, regulation, competence, reputation, investment and certification.',
+   extra:'About 74% of climate-litigation cases are in the USA. LSE Grantham Institute, Global trends in climate change litigation 2024 snapshot.'},
+  {id:24, emoji:'🤝', cat:'trends', sz:'sm',
+   term:'Stakeholder Capitalism',
+   def:'On 19 Aug 2019 the Business Roundtable (181 CEOs of the largest US corporations) declared that maximizing shareholder returns is no longer the sole purpose of a corporation — a shift to stakeholder capitalism.',
+   extra:'Signed by leaders incl. Jamie Dimon; framed via the 5 Ps — Purpose, Prosperity, People, Planet, Partnership. McKinsey: "From principle to practice — making stakeholder capitalism work."'},
+
+  // ---------- STRATEGY & VALUE (fail) ----------
+  {id:25, emoji:'🧭', cat:'fail', sz:'lg',
+   term:'Embedding Sustainability into Strategy',
+   def:'Integration evolves in stages:\n• Strategy → Performance (sustainability absent)\n• Strategy + Sustainability → Performance (bolted on)\n• Strategy → Sustainability → Performance (fully embedded, driving results)',
+   extra:'The goal is the third stage: sustainability inside the strategy, not beside it (Evolution of the integration of sustainability, Sessions 11 & 12 deck).'},
+  {id:26, emoji:'🏢', cat:'fail', sz:'md',
+   term:'Reactive vs Pro-active Company',
+   def:'Firms move along a spectrum from REACTIVE (responding to regulator/consumer/social pressure as a mandatory burden) to PRO-ACTIVE (treating pressure as responsibility, then opportunity, then existential need).',
+   extra:'Pressure types: regulator, consumer, social, environmental, existential — converted by pro-active firms into the 5 Ps: Purpose, Prosperity, People, Planet, Partnership.'},
+  {id:27, emoji:'🎬', cat:'fail', sz:'md',
+   term:'From Storytelling to StoryDoing',
+   def:'Credibility now comes from action, not narrative. The progression: Greenwashing → Greenwishing → Green Action → Green Activism.',
+   extra:'"This is no longer about Storytelling, it\'s about StoryDoing." External pressure (regulation, investors, employees, customers, cost of climate risk) is the catalyst for change (Sessions 11 & 12 deck).'},
+  {id:28, emoji:'💹', cat:'fail', sz:'md',
+   term:'Sustainability Leadership = Profitability',
+   def:'The investor case: leading on sustainability is increasingly the path to leading on returns, not a trade-off against them.',
+   extra:'"The companies that lead in sustainability will be the ones that will lead in profitability." – Larry Fink, BlackRock CEO (December 2023).'},
+  {id:29, emoji:'🪑', cat:'fail', sz:'sm',
+   term:'The Four Board Responsibilities',
+   def:'The board must embed sustainability through its core duties — strategy, risk oversight, talent/culture and stakeholder accountability — not delegate it to a CSR silo.',
+   extra:'Engaged organizations outperform: Gallup, The State of the Global Workplace 2024, on employee engagement in best-practice firms (Sessions 11 & 12 deck).'},
+  {id:30, emoji:'🌀', cat:'fail', sz:'sm',
+   term:'Systemic SMEs & Innovation',
+   def:'Smaller firms can solve problems from a systemic perspective: e.g. Vortex bladeless wind turbines (quieter, cheaper, more durable) and Fazla, which monetizes food/textile surplus via SaaS for donations.',
+   extra:'Vortex — a Spanish start-up reinventing local wind energy without blades; Fazla–Makro collaboration to avoid waste and resell surplus stock (Sessions 11 & 12 deck).'},
+
+  // ---------- BBVA CASE (play) ----------
+  {id:31, emoji:'🏦', cat:'play', sz:'lg',
+   term:'BBVA — Sustainability as a Growth Engine',
+   def:'Antoni Ballabriga (Global Head of Sustainability Intelligence & Advocacy) frames sustainability not as compliance but as a growth engine and competitive advantage embedded in BBVA\'s 2025–2029 Strategic Plan.',
+   extra:'Guest speaker, "Sustainability as a Growth Engine," ESADE, 4 May 2026. Pillars: a top-level Global Sustainability Area, sustainability-integrated risk management, and all employees\' variable pay linked to sustainable-business channeling.'},
+  {id:32, emoji:'💶', cat:'play', sz:'md',
+   term:'BBVA €700bn Channeling Target',
+   def:'BBVA set a sustainable-business channeling target of €700bn from 2025 to 2029, spanning climate, natural-capital and social opportunities (a holistic approach).',
+   extra:'In 2025 BBVA channeled €134bn (vs €93bn TAM in 2024); ~77% environmental scope, 23% social. Source: BBVA Annual Report 2025.'},
+  {id:33, emoji:'📈', cat:'play', sz:'md',
+   term:'BBVA — Grow and Decarbonize at the Same Time',
+   def:'BBVA shows it is possible to grow financing while cutting financed emissions: in Oil & Gas absolute emissions fell on the reduction pathway while the portfolio grew (+16% to €7.8bn, 2021–25); 76% of O&G clients actively manage their transition.',
+   extra:'Power generation emissions intensity fell while portfolio grew +57% to €20.9bn (2020–25). 99% of BBVA\'s footprint is financed emissions (Category 3.15). Source: BBVA Annual Report 2025.'},
+  {id:34, emoji:'🧮', cat:'play', sz:'md',
+   term:'BBVA — Transition Risk Indicator (TRi)',
+   def:'BBVA assesses each client\'s transition with the TRi: 70% risk exposure (sector + geography) and 30% ambition & credibility (interim/long-term targets, climate strategy, governance, GHG track-record).',
+   extra:'The TRi is integrated into the operation-admission process for proactive, dynamic portfolio management toward a net-zero-by-2050 scenario. Source: BBVA Annual Report 2025.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

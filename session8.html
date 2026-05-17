@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 8 · Inorganic Growth — Strategic Alliances</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 8 · Inorganic Growth — Strategic Alliances</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Foundations</span>
+  <span class="leg why">Why Ally</span>
+  <span class="leg types">Alliance Types</span>
+  <span class="leg trends">Lifecycle &amp; Exit</span>
+  <span class="leg fail">Why It Fails</span>
+  <span class="leg play">5-Step Playbook</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Foundations',
+  why:   'Why Ally',
+  types: 'Alliance Types',
+  trends:'Lifecycle & Exit',
+  fail:  'Why It Fails',
+  play:  '5-Step Playbook'
+};
+
+const cards = [
+  // ---------- FOUNDATIONS (modes) ----------
+  {id:1, emoji:'🧭', cat:'modes', sz:'lg',
+   term:'Three Corporate Development Modes',
+   def:'Firms grow capabilities in 3 ways:\n• BUILD — create new capabilities organically from within\n• BUY — acquire/merge to rapidly own capabilities & scale (M&A)\n• PARTNER — collaborate with external partners to access capabilities without full ownership',
+   extra:'Session 8 covers the PARTNER route. Strategic alliances are a hybrid solution to the BUY-or-BUILD dichotomy — a flexible, cost-effective way to execute corporate strategy.'},
+  {id:2, emoji:'📜', cat:'modes', sz:'lg',
+   term:'What Is a Strategic Alliance?',
+   def:'Gulati (1995): a collaborative agreement between two or more firms which contribute resources to a common endeavor of potentially important competitive consequences, while maintaining their individuality.',
+   extra:'Hoang & Rothaermel (2016) MIT Sloan: alliances are voluntary arrangements between two or more organizations to develop new processes, products, or services.'},
+  {id:3, emoji:'🔑', cat:'modes', sz:'md',
+   term:'4 Key Characteristics of an Alliance',
+   def:'1. Common endeavor/goal with competitive implications\n2. Resource contribution (capital, tech, people, IP)\n3. Shared risk and reward\n4. Maintenance of individuality — partners stay legally independent',
+   extra:'Maintaining individuality creates ambiguity (cooperate yet may compete elsewhere), a need for constant attention, and the need for proper incentives — managing on a razor\'s edge.'},
+  {id:4, emoji:'🪜', cat:'modes', sz:'md',
+   term:'Spectrum of Inter-Firm Governance',
+   def:'A continuum from market relations → strategic alliances → hierarchical relations (M&A). Alliances sit between arm\'s-length commercial transactions and full ownership.',
+   extra:'Adapted from Strategor (1993). With competitors the spectrum runs competition → collaboration → industry consolidation; with suppliers, market relations → alliances → vertical integration.'},
+  {id:5, emoji:'⚖️', cat:'modes', sz:'sm',
+   term:'The Razor\'s Edge',
+   def:'Partners cooperate to reach a shared goal but may compete in other areas — alignment must be actively maintained because partners\' goals can diverge over time.',
+   extra:'Kale & Singh (2009) place alliances on a scope ranging from spot transactions to deep cross-sharing of resources.'},
+  {id:6, emoji:'🔗', cat:'modes', sz:'sm',
+   term:'Alliances as Antecedents to M&A',
+   def:'A strategic alliance can be a low-commitment first step that lets partners run due diligence on each other before a possible acquisition.',
+   extra:'Allying allows specialization in single deals and lets a firm carry out due diligence on prospective targets before committing capital.'},
+
+  // ---------- WHY ALLY (why) ----------
+  {id:7, emoji:'💡', cat:'why', sz:'lg',
+   term:'Why Are Strategic Alliances Attractive?',
+   def:'• Share risk in resource-intensive endeavors\n• Allow specialization of capabilities in single deals\n• Create learning opportunities\n• Run due diligence on prospective targets\n• Cut the cost of building a value chain in new, uncertain industries\n• Pre-empt competition / entry',
+   extra:'Hoang & Rothaermel (2016): when conditions are uncertain and stakes are high, partnerships can be an attractive alternative to going it alone or to M&A.'},
+  {id:8, emoji:'🗺️', cat:'why', sz:'md',
+   term:'Realising Competitive Advantage',
+   def:'Three advantage levers from alliances:\n1. Market access — new markets, global presence, closeness to customer\n2. Technological competence — supplement tech & product family\n3. Shared cost & risk — improve cost position, reduce FX risk',
+   extra:'ESADE framework (Herbolzheimer & Mendoza); illustrated by Daimler Aerospace (DASA).'},
+  {id:9, emoji:'🔁', cat:'why', sz:'sm',
+   term:'Typical Goals of International Alliances',
+   def:'Partners exchange access: Firm A offers know-how in return for Firm B\'s access to business systems (customers, distribution, manufacturing), and vice versa — or both jointly develop something new.',
+   extra:'ESADE (Herbolzheimer, Mendoza). Three patterns: joint development, access in return for technology, and mutual exchange of access.'},
+  {id:10, emoji:'🚗', cat:'why', sz:'md',
+   term:'Tesla\'s Alliance Strategy',
+   def:'Tesla turned prospective rivals into partners: Daimler (2009) gave engineering expertise and a $50m cash injection; Toyota (2010) gave the NUMMI Fremont plant and lean manufacturing know-how.',
+   extra:'Hoang & Rothaermel (2016): the 2014 Panasonic deal added a jointly funded $5bn lithium-ion battery plant in Nevada — Tesla treated alliances as one overall standard-setting strategy, not isolated deals.'},
+  {id:11, emoji:'✈️', cat:'why', sz:'sm',
+   term:'Airline Alliances',
+   def:'Three global alliances: Star Alliance (1997, ~43% share), SkyTeam (2000, ~33%), Oneworld (1999, ~24%). They overcome government restrictions, drive down costs and boost revenue.',
+   extra:'Oneworld\'s pitch: more people want to fly to more places, more easily and for greater value.'},
+
+  // ---------- ALLIANCE TYPES (types) ----------
+  {id:12, emoji:'🏗️', cat:'types', sz:'lg',
+   term:'Joint Venture (JV)',
+   def:'Partners create a new, jointly owned legal entity, pooling capital and assets. Example: Sony Honda Mobility (SHM, 2022) — 50:50, ¥5bn each, to build the Afeela software-defined EV.',
+   extra:'C2R: Honda contributed mobility & manufacturing tech; Sony contributed imaging, sensing and PlayStation/entertainment. Afeela 1 priced from $89,900, California-first.'},
+  {id:13, emoji:'🧪', cat:'types', sz:'lg',
+   term:'R&D / Development Alliance',
+   def:'Partners co-develop new processes, products or services. Hoang & Rothaermel studied ~300 R&D alliances between large pharma and smaller biotech partners over two decades.',
+   extra:'In their study of 2,200+ R&D alliances by 325 biotech firms, different alliance types demanded different management capabilities.'},
+  {id:14, emoji:'🪪', cat:'types', sz:'sm',
+   term:'Licensing & Brand-IP Alliance',
+   def:'One partner licenses IP/brand to another. Lego licensed Star Wars, Harry Potter, Batman and more — but because it did not own the IP yet funded manufacturing & distribution, value accrued to partners.',
+   extra:'Hoang & Rothaermel (2016): Lego later became selective, seeking strategic AND operational fit — The Lego Movie grossed $450m+ on a $60m budget.'},
+  {id:15, emoji:'🛒', cat:'types', sz:'md',
+   term:'Distribution / Market-Access JV',
+   def:'A partner brings local distribution & market knowledge while the other brings brand & IP. Example: Starbucks–Boyu Capital China JV (closed Mar 2026) — Boyu 60%, Starbucks 40%.',
+   extra:'C2R: Boyu\'s stake valued ~$4bn; Starbucks China valued at $13bn+ with licensing; aspiration to grow from ~8,000 to 20,000 stores vs Luckin Coffee.'},
+  {id:16, emoji:'📡', cat:'types', sz:'sm',
+   term:'Infrastructure-Combining JV',
+   def:'Partners merge complementary assets into a 50:50 JV. Example: VodafoneZiggo (2016) — Liberty Global\'s Ziggo cable + Vodafone NL mobile, ~15m revenue units, €4bn+ revenue.',
+   extra:'C2R: EU approved subject to Vodafone divesting its NL consumer fixed business.'},
+
+  // ---------- LIFECYCLE & EXIT (trends) ----------
+  {id:17, emoji:'🔄', cat:'trends', sz:'lg',
+   term:'Alliances Are a Shifting Reality',
+   def:'Managing the relationship over time is usually more important than crafting the initial formal design (Doz & Hamel, 1998). Evolution can: preserve status quo, renegotiate terms, or dissolve.',
+   extra:'Renegotiation can rectify governance misalignment OR be a manifestation of hold-up — it is neither universally good nor bad.'},
+  {id:18, emoji:'🚪', cat:'trends', sz:'md',
+   term:'Exit Is Not Failure',
+   def:'Hoang & Rothaermel (2016): dissolving an alliance is not always a sign of failure. Since alliances explore new opportunities, some will prove less fruitful — agree exit triggers and wind-down rules upfront.',
+   extra:'Dissolution routes: partner buyout, third-party sale, expiration, or disagreements.'},
+  {id:19, emoji:'⚡', cat:'trends', sz:'md',
+   term:'Strategic Conditions Change (SK On–Ford)',
+   def:'Ford & SK On dissolved the $11.4bn BlueOval SK battery JV (formed 2021) in Dec 2025: Ford took the two Kentucky plants, SK On the Tennessee plant.',
+   extra:'C2R: cited slowing EV demand and lost US tax credits. Ford\'s Model e lost $4.7bn (2023), $5.1bn (2024), $849m (Q1 2025) — a textbook portfolio reconfiguration.'},
+  {id:20, emoji:'💸', cat:'trends', sz:'md',
+   term:'Natural End via Partner Buyout',
+   def:'An alliance can reach its natural end without conflict when one partner\'s priorities change. Liberty Global bought Vodafone\'s 50% of VodafoneZiggo (Feb 2026) for €1bn + 10% of new Ziggo Group.',
+   extra:'C2R: Vodafone simplifies its portfolio; Liberty Global consolidates Benelux. Both used the exit to create value, not escape a failed relationship.'},
+  {id:21, emoji:'🛑', cat:'trends', sz:'sm',
+   term:'JV Discontinued (Afeela)',
+   def:'On 25 Mar 2026 Sony & Honda halted both Afeela models after Honda\'s EV reassessment fundamentally altered SHM\'s assumptions, leaving no viable path to market.',
+   extra:'C2R: the JV was not formally dissolved — both said they are reviewing SHM\'s direction. Honda cited Trump tariffs and Chinese EV competition.'},
+
+  // ---------- WHY IT FAILS (fail) ----------
+  {id:22, emoji:'⚠️', cat:'fail', sz:'lg',
+   term:'Why Alliances Fail',
+   def:'Hoang & Rothaermel (2016): roughly 50% of all alliance portfolios underperform. Failure stems from poor active management, not lack of opportunity.',
+   extra:'Survey data in MIT Sloan: alliance experience does not automatically improve performance — it must be actively managed.'},
+  {id:23, emoji:'🎭', cat:'fail', sz:'lg',
+   term:'3 Dangerous Assumptions',
+   def:'Managers sow the seeds of failure by assuming:\n1. We will find the right partner\n2. We will capture enough value\n3. The alliance will stay relevant over time',
+   extra:'Hoang & Rothaermel (2016). The market for partners is crowded with incomplete info; competitive pressure forces rushed, lopsided deals; needs change but alliances do not always follow.'},
+  {id:24, emoji:'🧬', cat:'fail', sz:'md',
+   term:'Assumption 1 — Finding Good Partners',
+   def:'The market for alliance partners is crowded and competitive, and managers rarely have complete information to identify the best matches.',
+   extra:'Hoang & Rothaermel: during the biotech revolution ~2,000 ventures sought big-pharma alliances; four decades on, only a handful succeeded — most failed.'},
+  {id:25, emoji:'🪙', cat:'fail', sz:'md',
+   term:'Assumption 2 — Capturing Value',
+   def:'Strong competitive pressure drives quick deals; firms under-assess relative value capture or give away too much value fearing a large partner will walk away — making the portfolio unsustainable.',
+   extra:'Hoang & Rothaermel: lopsided terms that load risk onto the smaller partner cause it to focus on preventing losses in execution rather than creating value.'},
+  {id:26, emoji:'💥', cat:'fail', sz:'sm',
+   term:'Disadvantages & Governance Costs',
+   def:'Costs: reduced control, imperfect incentive alignment, loss of proprietary knowledge to a potential competitor, moral hazard/opportunism, lack of focus if too many alliances, hard-to-track results.',
+   extra:'Alliance only makes sense if Do-it-alone costs > Do-it-together costs + Governance costs (start-up, ongoing, compromise & lost-flexibility costs).'},
+
+  // ---------- 5-STEP PLAYBOOK (play) ----------
+  {id:27, emoji:'🗂️', cat:'play', sz:'lg',
+   term:'The 5-Step Alliance Framework',
+   def:'Hoang & Rothaermel (2016) holistic framework:\n1. Partner Selection\n2. Deal Negotiation\n3. Execution\n4. Exit\n5. Portfolio Management',
+   extra:'Even flawless execution yields low returns if wrong partners were chosen, too much value was ceded, or the deal adds little to the portfolio.'},
+  {id:28, emoji:'🎯', cat:'play', sz:'md',
+   term:'Step 1 — Partner Selection',
+   def:'Evaluate strategic fit, complementary capabilities and portfolio alignment. Assess partners on the bundles of relevant experience they bring, not in a vacuum.',
+   extra:'Key questions: How does it fit each company\'s strategy? Will the partner add strategic value and complement the portfolio? Can you adequately capture created value?'},
+  {id:29, emoji:'📝', cat:'play', sz:'md',
+   term:'Step 2 — Deal Negotiation',
+   def:'Balance value capture with partner incentives, and plan the exit from day one. Grabbing the lion\'s share risks undermining the alliance for little actual gain.',
+   extra:'Hoang & Rothaermel: balance protective vs adaptive governance, and design a coordinated handoff so negotiation knowledge & goodwill carry into execution.'},
+  {id:30, emoji:'🔧', cat:'play', sz:'sm',
+   term:'Step 3 — Execution',
+   def:'Assign dedicated alliance managers, run regular health checks, and resolve conflicts early with pre-agreed conflict-resolution procedures.',
+   extra:'Best practice: a dedicated alliance function. Eli Lilly created senior alliance champions plus trained alliance managers to centralise and share experience.'},
+  {id:31, emoji:'🚪', cat:'play', sz:'sm',
+   term:'Step 4 — Exit Planning',
+   def:'Ending an alliance is not failure. Negotiate exit triggers (missed milestones, cost overruns, or goal achieved) and clear wind-down obligations and stakeholder communication upfront.',
+   extra:'Inertia without exit planning means the portfolio fails to reflect changing strategic & environmental conditions.'},
+  {id:32, emoji:'📊', cat:'play', sz:'sm',
+   term:'Step 5 — Portfolio Management',
+   def:'Review the full picture regularly; balance low-risk with exploratory alliances; close gaps and redundancies; benchmark against competitors\' portfolios.',
+   extra:'Takeaways: think in portfolios not deals; smaller firms learn faster while larger firms must build dedicated alliance functions; strategic + operational fit = sustainable value.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

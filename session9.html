@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 9 · Corporate Center & Parenting Advantage · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 9 · Corporate Center &amp; Parenting Advantage</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Corporate Center</span>
+  <span class="leg why">Parenting Logic</span>
+  <span class="leg types">Value Creation Modes</span>
+  <span class="leg trends">Four Logics</span>
+  <span class="leg fail">Value Destruction</span>
+  <span class="leg play">Tata Group</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Corporate Center',
+  why:   'Parenting Logic',
+  types: 'Value Creation Modes',
+  trends:'Four Logics',
+  fail:  'Value Destruction',
+  play:  'Tata Group'
+};
+
+const cards = [
+  // ---------- CORPORATE CENTER (modes) ----------
+  {id:1, emoji:'🏢', cat:'modes', sz:'lg',
+   term:'The Corporate Center / Parent',
+   def:'The headquarters of a multi-business firm — the layer above the business units. It owns and oversees the portfolio but does not directly produce or sell. Its job is to make the businesses worth more together than apart.',
+   extra:'Goold, Campbell & Alexander (1994): the parent has no automatic right to exist. It must prove its businesses perform better in aggregate than as stand-alone entities.'},
+  {id:2, emoji:'🪜', cat:'modes', sz:'lg',
+   term:'4 Sources of Corporate-Level Value',
+   def:'How HQ raises overall performance:\n1. Portfolio management — shift weight toward high performers\n2. Restructuring — improve each business independently\n3. Synergies — skill transfers + resource/activity sharing\n4. Reduce the cost of the corporate center itself',
+   extra:'Source: adapted from Bharat Anand (2012) and Grant (2010). Item 4 matters because an expensive, value-neutral HQ destroys value by simple subtraction.'},
+  {id:3, emoji:'🤲', cat:'modes', sz:'md',
+   term:'4 Types of Value Creation at HQ',
+   def:'Parada & Planellas (2007): the centre adds value via\n• Individual support — help as needs arise\n• Linking synergies — connecting business units\n• Central functions & services — shared support\n• Portfolio management & corporate development — building new businesses',
+   extra:'A practical taxonomy of what a corporate center actually does day to day, beyond abstract synergy talk.'},
+  {id:4, emoji:'🔗', cat:'modes', sz:'md',
+   term:'The Parent as Intermediary',
+   def:'The parent sits between investors and the businesses. It competes not only with other parents but also with alternative intermediaries — mutual funds, private equity firms — that could own the same assets.',
+   extra:'Campbell, Goold & Alexander (1995): corporate-level strategy makes sense only if the parent creates enough value to beat these rival intermediaries.'},
+  {id:5, emoji:'🧮', cat:'modes', sz:'sm',
+   term:'Where to Compete vs Create Value',
+   def:'Two distinct corporate questions: WHERE to compete (where to grow, how to grow) and HOW the corporate centre creates value from that portfolio.',
+   extra:'Session framing: parenting answers the second question — value created from the parent-business relationship, not just portfolio choice.'},
+  {id:6, emoji:'⚖️', cat:'modes', sz:'sm',
+   term:'Ownership Is Not Enough',
+   def:'Investors can diversify on their own and buy index funds cheaply. Owning two businesses only makes sense if the parent adds value they could not get otherwise.',
+   extra:'This is the core test behind every parenting framework: the centre must beat the no-parent counterfactual.'},
+
+  // ---------- PARENTING LOGIC (why) ----------
+  {id:7, emoji:'🌳', cat:'why', sz:'lg',
+   term:'The Parenting Approach',
+   def:'Earlier frameworks (BCG matrix, portfolio logic) focused on the businesses and how they relate to each other. The parenting approach instead focuses on the resources and skills of the PARENT and the value created or destroyed in the parent-business relationship.',
+   extra:'Campbell, Goold & Alexander, Corporate Strategy: The Quest for Parenting Advantage, Harvard Business Review 73(2), 1995.'},
+  {id:8, emoji:'🧩', cat:'why', sz:'lg',
+   term:'Parenting Fit (or Misfit)',
+   def:'Successful parenting = a FIT between the parent\'s characteristics and the improvement opportunities in its particular businesses. A parent\'s skills are not good or bad in the absolute — their value depends on the needs of the businesses.',
+   extra:'Campbell, Goold & Alexander (1995). The same parent can add value to one business and destroy it in another, depending on fit.'},
+  {id:9, emoji:'🎯', cat:'why', sz:'md',
+   term:'Parenting Opportunities — The Upside',
+   def:'Step 2 of the framework: gauge the upside by asking — could the business link better with others, benefit from parent expertise, have its stakeholders managed better, or get help with decisions where it lacks expertise?',
+   extra:'Campbell, Goold & Alexander (1995). A parenting opportunity exists only where a business has a weakness the parent is well placed to fix.'},
+  {id:10, emoji:'❓', cat:'why', sz:'sm',
+   term:'The Two Key Parenting Questions',
+   def:'After analysing parent characteristics: (1) Does the parent have characteristics that FIT the parenting opportunities? — the upside. (2) Is there a MISFIT with the business\'s critical success factors? — the downside.',
+   extra:'Campbell, Goold & Alexander (1995). Both must be weighed — a parent can add value and destroy it at the same time.'},
+
+  // ---------- VALUE CREATION MODES (types) ----------
+  {id:11, emoji:'📊', cat:'types', sz:'lg',
+   term:'Portfolio Management',
+   def:'Creating value by altering the portfolio composition — increasing the weight of high-performing businesses and reducing the weight of low-performing ones (buy, fund, fix or exit).',
+   extra:'Adapted from Anand (2012) / Grant (2010). The classic conglomerate / private-equity logic: value from picking and reallocating, not from operating synergies.'},
+  {id:12, emoji:'🔧', cat:'types', sz:'md',
+   term:'Restructuring',
+   def:'Creating value by improving the performance of individual businesses independently of each other — turnarounds, new management, cost discipline, better governance.',
+   extra:'Anand (2012). Each business gets better on its own; value does not require linkages between units.'},
+  {id:13, emoji:'🔁', cat:'types', sz:'md',
+   term:'Synergies Across Businesses',
+   def:'Creating value by exploiting links across units — either by SKILL TRANSFERS (moving know-how between businesses) or by RESOURCE & ACTIVITY SHARING (shared functions, scale, infrastructure).',
+   extra:'Anand (2012). The hardest source to realise: requires active coordination the parent must orchestrate, not just own.'},
+  {id:14, emoji:'✂️', cat:'types', sz:'md',
+   term:'Reducing the Cost of the Center',
+   def:'The fourth, often forgotten, source: a leaner corporate center. Every euro of HQ overhead is a direct subtraction from group value unless it is more than offset by value added.',
+   extra:'Anand (2012) / Grant (2010). Bloated head offices are a frequent and underrated cause of value destruction.'},
+  {id:15, emoji:'🪜', cat:'types', sz:'sm',
+   term:'5-Step Analytical Framework',
+   def:'1. Understand the businesses (critical success factors)\n2. Identify parenting opportunities (upside)\n3. Assess parent characteristics — fit or misfit\n4. Validate judgements (track record, performance)\n5. Make changes to improve fit',
+   extra:'Campbell, Goold & Alexander (1995). A structured way to test whether a parent really adds value to a given business.'},
+  {id:16, emoji:'📋', cat:'types', sz:'sm',
+   term:'Four Parent Characteristics',
+   def:'Parenting characteristics group into: (a) mental maps, experience & skills of parent managers; (b) central functions, shared services & resources; (c) corporate structure, systems & processes; (d) the decentralization contract.',
+   extra:'Campbell, Goold & Alexander (1995). Significant changes to these characteristics are hard to make — usually it is easier to change the portfolio.'},
+
+  // ---------- FOUR LOGICS (trends) ----------
+  {id:17, emoji:'🧭', cat:'trends', sz:'lg',
+   term:'The Four Logics of Corporate Strategy',
+   def:'Sull, Turconi, Sull & Yoder (MIT Sloan, 2017): a 2x2 matrix on two axes —\n• Corporate-BU linkage: how much units depend on corporate resources\n• BU-BU linkage: how much units depend on one another\nThis yields four logics: Portfolio, Leverage, Federal, Integrative.',
+   extra:'A meta-analysis found a unit\'s corporate parent explains more of its performance than its industry. McKinsey: 83% of execs say cross-unit resource reallocation is the biggest growth driver.'},
+  {id:18, emoji:'🗂️', cat:'trends', sz:'md',
+   term:'Portfolio Logic',
+   def:'Low corporate-BU and low BU-BU linkage. The parent develops guidelines for which businesses to enter, fund or exit; each business unit has its own stand-alone strategy.',
+   extra:'Sull et al. (2017). Examples: GE, Tata Group, and private equity firms such as KKR and Blackstone.'},
+  {id:19, emoji:'🏷️', cat:'trends', sz:'md',
+   term:'Leverage Logic',
+   def:'High corporate-BU but low BU-BU linkage. Business units make heavy use of the corporate brand, technology and expertise — but do not depend much on each other.',
+   extra:'Sull et al. (2017). Examples: Trader Joe\'s and Burberry — strip away the brand and scale and only an undifferentiated local store remains.'},
+  {id:20, emoji:'🤝', cat:'trends', sz:'md',
+   term:'Federal Logic',
+   def:'Low corporate-BU but high BU-BU linkage. Loose confederations of businesses that band together — pass business to one another, jointly lobby, share best practices — without a powerful corporate parent.',
+   extra:'Sull et al. (2017). Examples: Star Alliance in airlines, The Leading Hotels of the World. Often used to describe the Tata federal structure.'},
+  {id:21, emoji:'🕸️', cat:'trends', sz:'md',
+   term:'Integrative Logic',
+   def:'High corporate-BU and high BU-BU linkage. Units rely both on corporate assets AND on one another. Corporate needs rules for the portfolio and for managing interdependencies.',
+   extra:'Sull et al. (2017). Example: Walt Disney — parks, studios, consumer products and TV all use shared characters and cross-promote one another.'},
+  {id:22, emoji:'🔮', cat:'trends', sz:'sm',
+   term:'Use the Logic to Guide Strategy',
+   def:'Pick where you ARE and where you want to BE. Shared services must follow the chosen logic — e.g. shifting from Portfolio to Leverage means shared services move from serving BU priorities to serving the overall corporate strategy.',
+   extra:'Sull et al. (2017). The matrix is not just descriptive; it prescribes how to organise functions and write BU strategies.'},
+
+  // ---------- VALUE DESTRUCTION (fail) ----------
+  {id:23, emoji:'⚠️', cat:'fail', sz:'lg',
+   term:'The Parent Can Destroy Value',
+   def:'A parent destroys value when its costs exceed the value it adds, when it imposes a poor fit on businesses, or when bureaucracy slows units that would do better alone. The default assumption should be skepticism, not entitlement.',
+   extra:'Goold, Campbell & Alexander (1994): the parent has no automatic right to exist. Most heads of group HQ overestimate the value they add.'},
+  {id:24, emoji:'🚫', cat:'fail', sz:'md',
+   term:'Misfit — The Downside',
+   def:'A misfit occurs when the parent\'s characteristics clash with a business\'s critical success factors — the parent intervenes where it lacks understanding and damages performance.',
+   extra:'Campbell, Goold & Alexander (1995): a parent skilled in cost-driven businesses can wreck a business whose success depends on speed or creativity.'},
+  {id:25, emoji:'💸', cat:'fail', sz:'md',
+   term:'The Cash-Cow vs New-Bets Tension',
+   def:'A classic parenting trap: a dominant profit generator quietly subsidises newer loss-making ventures. Without discipline this masks weak units and erodes overall returns.',
+   extra:'Tata 2026: TCS crossed $30bn revenue in FY25 and its cash flows effectively subsidise loss-making Air India, Tata Digital and electronics — a live parenting tension.'},
+  {id:26, emoji:'📉', cat:'fail', sz:'sm',
+   term:'Performance Under Pressure',
+   def:'Even a respected parent can come under fire: weak units, capital sunk into long-payback bets, and contested leadership all raise the question of whether the centre still adds value.',
+   extra:'Tata 2026: combined market cap fell nearly $73bn in 2025; Noel Tata raised concerns over losses and capital allocation, with calls for restructuring or divestment.'},
+
+  // ---------- TATA GROUP (play) ----------
+  {id:27, emoji:'🏛️', cat:'play', sz:'lg',
+   term:'The Tata Federal Structure',
+   def:'Unlike a Western M-form conglomerate (one company, divisions), Tata is a business group: each business is a separate legal entity, many independently listed, held via Tata Sons. RG calls the unlisted-parent / listed-subsidiary form a federal structure.',
+   extra:'Chittoor et al., Creating a Corporate Advantage: The Case of the Tata Group (ISB005, 2013). Grew ~20% p.a. to $100bn revenue by 2011-12.'},
+  {id:28, emoji:'🏠', cat:'play', sz:'lg',
+   term:'The Haveli Model',
+   def:'R. Gopalakrishnan\'s metaphor: a haveli is a traditional Indian joint-family mansion where an extended family lives under one roof — shared common spaces and values, but each household keeps its own autonomy.',
+   extra:'Tata Sons provides roots (values, brand, financial backing) while each subsidiary runs its own affairs. Culture is live and let live — the glue is Tata-ness.'},
+  {id:29, emoji:'🅣', cat:'play', sz:'md',
+   term:'BEBP — Brand Equity Business Promotion',
+   def:'The 1998 agreement governing use of the Tata name and logo. Signatories must adopt the Tata Business Excellence Model and Tata Code of Conduct, and pay up to 0.25% of turnover (capped at 5% of pre-tax profit).',
+   extra:'ISB005 (2013). Senior execs called BEBP probably the most significant mechanism that bound the group together. Tata brand valued at ~$17bn (Brand Finance, 2011).'},
+  {id:30, emoji:'🏅', cat:'play', sz:'md',
+   term:'TBEM — Tata Business Excellence Model',
+   def:'A business-excellence framework adapted from the US Malcolm Baldrige award, run by Tata Quality Management Services. Companies must show scalable improvement within three years of signing BEBP.',
+   extra:'ISB005: never formally mandatory but no company was allowed to bypass it. From 1995-2011 adopters rose 12→44; average score band 150-250 → 450-550.'},
+  {id:31, emoji:'🛒', cat:'play', sz:'md',
+   term:'Project Prune & Discretionary Services',
+   def:'Tata\'s group cost-saving sourcing effort. Companies were completely FREE to participate or not — no diktat. Group Legal, Group HR, TMTC and others had to sell themselves and bill clients to survive.',
+   extra:'ISB005: Project Prune worked in some areas, not others (media buying failed). Group savings ~INR 50-160 crore/year. Self-funding keeps services on their toes.'},
+  {id:32, emoji:'❓', cat:'play', sz:'sm',
+   term:'Tata 2026 — The Unresolved Question',
+   def:'As Tata bets on capital-intensive industries (semiconductors, airlines, EVs), should the centre tighten its grip and mandate performance standards — or trust the autonomous haveli model?',
+   extra:'ESADE 2026 update: revenue ~$180bn, 31 companies, 1m+ employees. Noel Tata favours more accountability; Ratan Tata\'s informal authority ended with his death in Oct 2024. Tata vs LVMH: LVMH is held together by shared luxury/brand; Tata only by shared values, brand and financial backing.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>

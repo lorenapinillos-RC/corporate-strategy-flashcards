@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 4 · Vertical Integration & International Diversification · Flashcards</title>
+<style>
+  :root{
+    --modes:#1d4ed8;   --modes-l:#dbeafe;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --play:#7c3aed;     --play-l:#ede9fe;
+    --trends:#0e7490;   --trends-l:#cffafe;
+    --why:#b45309;      --why-l:#fef3c7;
+    --types:#15803d;    --types-l:#dcfce7;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.modes::before{background:var(--modes)}
+  .leg.why::before{background:var(--why)}
+  .leg.types::before{background:var(--types)}
+  .leg.trends::before{background:var(--trends)}
+  .leg.fail::before{background:var(--fail)}
+  .leg.play::before{background:var(--play)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Session 4 · Vertical Integration &amp; International Diversification</h1>
+  <p id="subtitle">32 concepts · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg modes">Vertical Integration</span>
+  <span class="leg why">Why Integrate</span>
+  <span class="leg types">Hybrid Models</span>
+  <span class="leg trends">Going International</span>
+  <span class="leg fail">Intl Challenges</span>
+  <span class="leg play">Entry &amp; Selection</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  modes: 'Vertical Integration',
+  why:   'Why Integrate',
+  types: 'Hybrid Models',
+  trends:'Going International',
+  fail:  'Intl Challenges',
+  play:  'Entry & Selection'
+};
+
+const cards = [
+  // ---------- VERTICAL INTEGRATION (modes) ----------
+  {id:1, emoji:'🔗', cat:'modes', sz:'lg',
+   term:'Vertical Integration: The Core Question',
+   def:'Vertical scope is the firm\'s position along the industry value chain. The strategic choice is Specialization vs Integration:\n• Specialize in one stage and outsource the rest\n• Integrate across multiple stages of the value chain',
+   extra:'Grant (2022): the real question is not "VI or not?" but "which option is better, and under which conditions?" Vertical scope is one of the strategic options for managing the scope of the firm (Parada & Planellas, 2007).'},
+  {id:2, emoji:'⬅️', cat:'modes', sz:'md',
+   term:'Backward (Upstream) Integration',
+   def:'Moving toward the source: the firm acquires or builds the capability to produce its own inputs / components instead of buying them from suppliers.',
+   extra:'Boeing reacquiring Spirit AeroSystems in 2024 for $4.7bn — Boeing had spun off the parts builder in 2005; reintegrating it aligned safety and quality systems after the 737 Max blowout (Financial Times, July 1, 2024).'},
+  {id:3, emoji:'➡️', cat:'modes', sz:'md',
+   term:'Forward (Downstream) Integration',
+   def:'Moving toward the customer: the firm takes ownership of distribution, channels or the customer interface instead of selling through independents.',
+   extra:'PepsiCo reacquired its two anchor bottlers, Pepsi Bottling and PepsiAmericas, in 2010 for $7.8bn — forward integration to achieve superior coordination (Bloomberg TV, Aug 4, 2009).'},
+  {id:4, emoji:'⚖️', cat:'modes', sz:'md',
+   term:'Market vs Hierarchy',
+   def:'The fundamental governance choice: organize a transaction through the market (arm\'s-length contracts) or inside the firm via hierarchy (common ownership and managerial control).',
+   extra:'Sits at the heart of transaction cost economics: integrate (hierarchy) when the costs and hazards of market contracting exceed the bureaucratic costs of doing it in-house.'},
+  {id:5, emoji:'🍎', cat:'modes', sz:'sm',
+   term:'Apple vs Samsung: Two VI Approaches',
+   def:'Different ways to integrate: Apple integrates hardware, software and services for a unified exclusive user experience while outsourcing manufacturing. Samsung controls production of essential components while outsourcing the OS (Android).',
+   extra:'Prepared by Andrasik, Babel, Bird, Federico, Subietas & Xinyi (2019) based on Vergara (2012). Same goal — control — but applied to different stages of the chain.'},
+  {id:6, emoji:'🔋', cat:'modes', sz:'sm',
+   term:'VI and Geopolitical Control',
+   def:'Through vertical integration, Chinese companies control the supply chains of low-emission electricity industries — which carries geopolitical implications.',
+   extra:'Marzo, based on EIA / ETP (2023). VI is not only about efficiency: controlling a full clean-energy value chain becomes a source of strategic and national power.'},
+
+  // ---------- WHY INTEGRATE (why) ----------
+  {id:7, emoji:'🎯', cat:'why', sz:'lg',
+   term:'When to Integrate: Strategic Considerations',
+   def:'Integrate to increase market power vs actual and potential competitors:\n• Foreclose input/output markets or raise rivals\' costs\n• Cross-subsidize one stage to squeeze out a specialized rival\n• Increase entry barriers\n• Retain control over proprietary knowledge',
+   extra:'Based on Osegowitsch & Madhok (2003); Grant (2022). Strategic motives are about power and positioning — preventing suppliers/customers from becoming competitors.'},
+  {id:8, emoji:'⚙️', cat:'why', sz:'lg',
+   term:'When to Integrate: Efficiency Considerations',
+   def:'Integrate when:\n• There are technical economies from co-locating and integrating processes (though common ownership is not strictly required)\n• To avoid high transaction costs of market contracts under "market failure"\n• To achieve superior coordination',
+   extra:'Based on Grant (2022). Market-failure conditions: small numbers of bargaining firms, transaction-specific investments, risk of opportunism, high supply/demand uncertainty (quality or price volatility).'},
+  {id:9, emoji:'🪤', cat:'why', sz:'md',
+   term:'Transaction Costs & the Hold-Up Problem',
+   def:'Market contracting is costly when there is asset specificity, small numbers of bargainers and opportunism — exposing a party to monopolistic rents or quasi-rents (the "hold-up" problem).',
+   extra:'From Session 3/4 link (Parada & Planellas, 2007): contracts, asset specificity and quasi-rents. Vertical integration removes the exposure by internalizing the transaction.'},
+  {id:10, emoji:'🛡️', cat:'why', sz:'md',
+   term:'Why VI Stays Resilient: New Motives',
+   def:'Despite the "stick to your knitting" mantra, VI remains surprisingly resilient. Newer rationales go beyond power and transaction costs: controlling the customer interface, brand management, and learning.',
+   extra:'Osegowitsch & Madhok (2003), "Vertical integration is dead, or is it?" — academia treated de-integration as settled, yet VI persists across pharma, defense, utilities, computers and autos.'},
+  {id:11, emoji:'🧭', cat:'why', sz:'sm',
+   term:'Co-location ≠ Common Ownership',
+   def:'Technical economies from integrating physical processes (e.g. co-located plants) can justify tight coordination — but do not necessarily require the two stages to share common ownership.',
+   extra:'Grant (2022). A subtle point: many integration benefits can be captured through close partnership or co-location without full vertical ownership.'},
+
+  // ---------- HYBRID MODELS (types) ----------
+  {id:12, emoji:'🪢', cat:'types', sz:'lg',
+   term:'Designing Vertical Relationships',
+   def:'Choices are NOT limited to full VI or arm\'s-length market contracts. Vertical relationships vary along two features:\n• How much the buyer and seller commit resources to the relationship\n• The formality of the relationship',
+   extra:'Based on Grant (2022). There is no generic solution — the right design depends on the resources, capabilities and strategy of the individual firms.'},
+  {id:13, emoji:'✂️', cat:'types', sz:'md',
+   term:'Tapered (Partial) Integration',
+   def:'A hybrid: the firm BOTH buys from independent suppliers AND self-supplies, or sells directly to end customers AND through its distribution channels. Used to secure alternative supply, learn from customers, run comparative cost controls and gain speed.',
+   extra:'Based on Mark Fruin (2007). The internal arm becomes a benchmark against external suppliers and a source of market learning, while hedging full integration.'},
+  {id:14, emoji:'💸', cat:'types', sz:'md',
+   term:'The Costs of Vertical Integration',
+   def:'VI is asset-intensive (is it the best use of funds?); needs distinctive capabilities at each stage; risks loss of focus across strategically different businesses; can create competitive disadvantage (e.g. channel conflict).',
+   extra:'Based on Mark Fruin (2007); Grant (2022). VI may fail to leverage resources due to bureaucracy, weak "high-powered" incentives, and under-/over-supply from differing optimal scales between stages.'},
+  {id:15, emoji:'🧊', cat:'types', sz:'sm',
+   term:'Rigidity & Premature Commitment',
+   def:'Self-supply compounds the risk of a halt in the supply chain and creates rigidity. VI carries higher performance risk in turbulent environments with high technological volatility and uncertain demand.',
+   extra:'Based on Grant (2022). The danger of "premature commitment" — locking into one technology/stage just before the environment shifts.'},
+  {id:16, emoji:'⚠️', cat:'types', sz:'sm',
+   term:'Risk Allocation in Vertical Design',
+   def:'Key design questions for any vertical relationship: How is risk allocated between the parties? Are the incentives appropriate? There is no one-size-fits-all answer.',
+   extra:'Based on Grant (2022). Incentive design and risk sharing — not just ownership — determine whether a vertical relationship actually works.'},
+
+  // ---------- GOING INTERNATIONAL (trends) ----------
+  {id:17, emoji:'🌍', cat:'trends', sz:'lg',
+   term:'What Makes Internationalization Different',
+   def:'Going abroad means operating in multiple environments: diverse consumer preferences, distribution channels, legal frameworks, cultural traits and financial infrastructures — plus added political demands and risks.',
+   extra:'Firms must mesh corporate strategy with host-country industrial development policies, yet there is always potential for conflict. Ohmae\'s 3Cs (Company, Customers, Competitors) gain a Country and a Currency dimension abroad.'},
+  {id:18, emoji:'❓', cat:'trends', sz:'lg',
+   term:'Three Key Questions of International Strategy',
+   def:'International business strategy answers three questions:\n• WHY do firms go abroad? (motives)\n• WHERE to go? (host country choices)\n• HOW to enter and compete? (entry mode & implementation)',
+   extra:'The session\'s organizing framework. Each question maps to a body of analysis: motives, country-market analysis, and entry-mode selection.'},
+  {id:19, emoji:'🚀', cat:'trends', sz:'md',
+   term:'Proactive vs Reactive Motives',
+   def:'Proactive: cost advantage, unique products, technological advantage, exclusive information, tax benefits. Reactive: competitive pressure (foreign MNs entering), declining domestic sales, excess capacity, saturated home markets, following customers, resource shortage.',
+   extra:'Reactive motives are defensive responses; proactive motives are pull factors. Most real expansions blend both.'},
+  {id:20, emoji:'🎯', cat:'trends', sz:'md',
+   term:'Four Main Drivers of Going Abroad',
+   def:'• Market seeking — revenue growth, geographic risk diversification, scale economies\n• Resource seeking — access to scarce natural resources\n• Efficiency seeking — cost arbitrage, global supply/manufacturing chains\n• Strategic asset seeking — technology, brands, customer access',
+   extra:'The classic Dunning-style taxonomy used in the deck. Naming the driver clarifies what "success abroad" should actually deliver.'},
+  {id:21, emoji:'💪', cat:'trends', sz:'md',
+   term:'Internationalization Makes Firms Stronger',
+   def:'Internationalization expands the operating horizon beyond the home country, giving access to customers, factors of production and rivals unavailable at home — and may build capabilities the firm would otherwise never develop.',
+   extra:'Tallman & Yip (2001). José Cosmen, President of ALSA: "Going international... allowed us to improve our competitiveness, because you get rid of any inferiority complex" (Cátedra SCH, Nebrija, 2003).'},
+  {id:22, emoji:'💱', cat:'trends', sz:'sm',
+   term:'Currency & Organizational Complexity',
+   def:'Abroad, performance is measured in multiple currencies, creating accounting and economic exposure. Firms also face increased organizational complexity across barriers of distance, time, language and culture.',
+   extra:'From "What else is different?" — going global also opens new competitive options through multiple-market access and global-scale economics.'},
+
+  // ---------- INTL CHALLENGES (fail) ----------
+  {id:23, emoji:'🐀', cat:'fail', sz:'lg',
+   term:'The RAT Test',
+   def:'Internationalization is only an opportunity for firms with unique capabilities exploitable abroad. Those capabilities must pass the RAT test — be:\n• Relevant\n• Appropriable\n• Transferable',
+   extra:'Lessard (2003), "Frameworks for Global Strategic Analysis", Journal of Strategic Management Education, p. 87. If a capability fails any of the three, expansion is unlikely to create value.'},
+  {id:24, emoji:'🧱', cat:'fail', sz:'md',
+   term:'Difficulties in Internationalization',
+   def:'Cuervo-Cazurra et al. (2007) classify difficulties by cause: loss of an advantage (cannot transfer it / cannot create value) and creation of a disadvantage (disadvantage of transfer; government- or consumer-based disadvantage of foreignness).',
+   extra:'Cuervo-Cazurra et al. (2007), "Causes of the difficulties in internationalization", Journal of International Business Studies, Vol. 38, pp. 709–725.'},
+  {id:25, emoji:'🆕', cat:'fail', sz:'md',
+   term:'The Four Liabilities',
+   def:'Lack of complementary resources creates four liabilities abroad: liability of expansion, liability of newness, liability of foreignness, and liability of infrastructure.',
+   extra:'Cuervo-Cazurra et al. (2007). "Liability of foreignness" is the canonical cost of being an outsider; the others capture stretch, inexperience and weak local infrastructure.'},
+  {id:26, emoji:'🧬', cat:'fail', sz:'md',
+   term:'Entry Implementation Challenges',
+   def:'Two challenges of entry implementation: (1) Transplant the corporate DNA — core business-model elements, capabilities, values and practices into foreign subsidiaries; (2) Win the local battle — host-country customers, competitors and governments.',
+   extra:'Gupta & Govindarajan (2001). Capability transfer is necessary but not sufficient — a literal copy of the home model often fails, and the firm must still out-compete locally.'},
+  {id:27, emoji:'📍', cat:'fail', sz:'sm',
+   term:'Essence of International Business Strategy',
+   def:'Verbeke\'s view: international success rests on combining Location Advantages with firm-specific advantages — both Non-Location-Bound (transferable) and Location-Bound (tied to a place).',
+   extra:'Verbeke (2013), International Business Strategy, Cambridge University Press. Non-location-bound FSAs travel; location-bound FSAs do not — design strategy around the difference.'},
+
+  // ---------- ENTRY & SELECTION (play) ----------
+  {id:28, emoji:'📊', cat:'play', sz:'lg',
+   term:'Country-Market Analysis',
+   def:'Before entering, managers must understand three things about a country-market:\n• Its potential (attractiveness)\n• The differential costs of doing business there\n• The risks of being present there',
+   extra:'Requires knowledge of geography, segmentation, competitors/pricing/costs, suppliers/distributors/talent, logistics, infrastructure, legislation (sector, corporate, tax) and the business language & culture.'},
+  {id:29, emoji:'🚪', cat:'play', sz:'lg',
+   term:'International Entry Modes',
+   def:'Three families:\n• Exporting (produce at home): indirect, direct, sales subsidiaries\n• Foreign direct investment (produce abroad): greenfield, JV/alliances, M&A (brownfield)\n• Contractual (transfer the advantage): licensing, franchising, management contracts',
+   extra:'Trade-off between control/commitment and risk/flexibility: exporting is low-commitment, FDI is high-commitment, contractual modes transfer the competitive advantage to a partner.'},
+  {id:30, emoji:'🗺️', cat:'play', sz:'md',
+   term:'Gupta & Govindarajan Market-Selection Grid',
+   def:'Two axes: strategic importance of the market (market + learning potential) vs ability of the company to exploit the market. Outcomes: Quick entry, Sequential entry (build a beachhead first), Opportunistic entry, or Ignore for now.',
+   extra:'Gupta & Govindarajan (2001). Exploitation ability is usually high when there are no regulatory barriers and there is geographic, cultural and linguistic proximity, and low rivalry.'},
+  {id:31, emoji:'🔁', cat:'play', sz:'md',
+   term:'Process of Expansion + Local Adaptation',
+   def:'Ellis & Williams sequence: country/location screening & selection → entry mode & competitive strategy → entry implementation → performance → exit mode. Yip\'s logic: develop core strategy at home, then transfer capabilities and adapt that strategy to the local context.',
+   extra:'Based on Ellis & Williams (1995) and adapted from George S. Yip. Expansion is a managed process with feedback and a built-in exit option; the core strategy is the spine, but it must be locally adapted to win.'},
+  {id:32, emoji:'🍯', cat:'play', sz:'sm',
+   term:'The Sweet Spot (Coe\'s Case)',
+   def:'The Sweet Spot is where the firm meets customers\' needs in a way competitors cannot — the intersection of customers\' needs, competitors\' offerings and the company\'s capabilities, within a context.',
+   extra:'Collis & Rukstad (2008). In "Play It Safe at Home or Take a Risk Abroad?" (Aaron\'s/Coe\'s), Aaron\'s entered the UK in 2010 via a minority stake in PerfectHome and adapted the rent-to-own model to local law.'},
+
+  {id:33, emoji:'🧭', cat:'trends', sz:'lg',
+   term:'The CAGE Distance Framework',
+   def:'Pankaj Ghemawat\'s framework for assessing how "far" a foreign market really is along four kinds of distance:\n• Cultural\n• Administrative\n• Geographic\n• Economic\nThe bigger the distance on a dimension that matters for your industry, the harder and costlier the expansion.',
+   extra:'Ghemawat, "Distance Still Matters" (HBR, 2001). The point: physical proximity is not the same as market closeness — distance must be measured on all four axes, weighted by what your specific business depends on.'},
+  {id:34, emoji:'🗣️', cat:'trends', sz:'md',
+   term:'CAGE: Cultural Distance',
+   def:'Differences in language, religion, social norms and ethnicity. It raises the cost of understanding customers, employees and partners, and is the most often underestimated dimension.',
+   extra:'Star TV in Asia assumed culture was irrelevant and pushed pan-regional English programming — the misjudgement cost billions before it localised.'},
+  {id:35, emoji:'🏛️', cat:'trends', sz:'md',
+   term:'CAGE: Administrative Distance',
+   def:'Differences in political and institutional ties: colonial links, trade blocs, shared currency, regulation and government policy. Shared administrative history dramatically lowers friction.',
+   extra:'A colony–colonizer link is associated with roughly a +900% boost in bilateral trade (Frankel & Rose) — institutions and historical ties matter as much as economics.'},
+  {id:36, emoji:'🌍', cat:'trends', sz:'sm',
+   term:'CAGE: Geographic Distance',
+   def:'Physical remoteness plus transport links, infrastructure and even time zones — it drives logistics cost and the feasibility of serving a market.',
+   extra:'Trade between countries 5,000 miles apart is only about 20% of the trade between countries 1,000 miles apart — distance still bites despite globalisation.'},
+  {id:37, emoji:'💱', cat:'trends', sz:'md',
+   term:'CAGE: Economic Distance',
+   def:'Differences in income levels, the cost and quality of resources, and consumer wealth and distribution systems. It determines whether your value proposition and cost model even transfer.',
+   extra:'Wal-Mart Canada ≠ Wal-Mart India: resource costs, incomes and distribution differ so much that the same model cannot simply be copied across economic distance.'}
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>
