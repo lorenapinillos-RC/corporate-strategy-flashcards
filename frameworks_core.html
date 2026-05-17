@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Strategy — CORE Frameworks · Which Tool for Which Question</title>
+<style>
+    :root{
+    --scope:#1d4ed8;    --scope-l:#dbeafe;
+    --vertint:#dc2626;  --vertint-l:#fee2e2;
+    --growth:#7c3aed;   --growth-l:#ede9fe;
+    --parent:#0e7490;   --parent-l:#cffafe;
+    --gov:#b45309;      --gov-l:#fef3c7;
+    --sustain:#15803d;  --sustain-l:#dcfce7;
+    --fail:#dc2626;     --fail-l:#fee2e2;
+    --types:#15803d;    --types-l:#dcfce7;
+    --modes:#1d4ed8;
+    --ink:#1e293b; --soft:#64748b; --bg:#f1f5f9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:30px 24px 22px;text-align:center}
+  header .back{display:inline-block;color:#cbd5e1;text-decoration:none;font-size:.8rem;margin-bottom:10px}
+  header h1{font-size:1.5rem;font-weight:700;line-height:1.25}
+  header p{font-size:.85rem;opacity:.75;margin-top:6px}
+  .modes-bar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .modes-bar button{
+    background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+  .modes-bar button.active{background:#fff;color:#1e293b}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:14px 18px;background:#fff;border-bottom:1px solid #e2e8f0;font-size:.74rem;color:var(--soft)}
+  .leg{display:flex;align-items:center;gap:6px}
+  .leg::before{content:"";width:11px;height:11px;border-radius:50%;display:inline-block}
+  .leg.scope::before{background:var(--scope)}
+  .leg.vertint::before{background:var(--vertint)}
+  .leg.growth::before{background:var(--growth)}
+  .leg.parent::before{background:var(--parent)}
+  .leg.gov::before{background:var(--gov)}
+  .leg.sustain::before{background:var(--sustain)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+
+  /* ---------- Flashcard mode ---------- */
+  #fc .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:6px}
+  #fc .progress i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#0e7490);width:0;transition:.3s}
+  #fc .count{text-align:center;font-size:.78rem;color:var(--soft);margin-bottom:18px}
+  .scene{perspective:1600px;max-width:620px;margin:0 auto}
+  .flip{position:relative;width:100%;min-height:340px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flip.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;background:#fff;
+    box-shadow:0 10px 34px rgba(0,0,0,.12);padding:34px 30px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;border-top:8px solid var(--cc,#1d4ed8)}
+  .face.back{transform:rotateY(180deg);align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto}
+  .face .emoji{font-size:4.6rem;line-height:1;margin-bottom:16px}
+  .face .cat-pill{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--cc);background:var(--cc-l);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  .face .term{font-size:1.5rem;font-weight:700;line-height:1.3}
+  .face .hint{position:absolute;bottom:16px;font-size:.72rem;color:#94a3b8}
+  .face.back .b-emoji{font-size:2rem;margin-bottom:8px}
+  .face.back .b-term{font-size:1.15rem;font-weight:700;margin-bottom:12px;color:var(--cc)}
+  .face.back .def{font-size:1rem;line-height:1.6}
+  .face.back .extra{margin-top:14px;padding-top:14px;border-top:1px dashed #e2e8f0;
+    font-size:.9rem;line-height:1.55;color:var(--soft)}
+  .actions{display:flex;gap:12px;justify-content:center;margin:22px auto 0;max-width:620px}
+  .actions button{flex:1;padding:14px;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s}
+  .again{background:var(--fail-l);color:var(--fail)}
+  .know{background:var(--types-l);color:var(--types)}
+  .actions button:hover{filter:brightness(.95)}
+  .navrow{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .navrow button{background:#fff;border:1px solid #e2e8f0;color:var(--soft);padding:9px 18px;
+    border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer}
+  .done{text-align:center;padding:50px 20px}
+  .done h2{font-size:1.6rem;margin-bottom:10px}
+  .done p{color:var(--soft);margin-bottom:22px}
+  .done button{background:var(--modes);color:#fff;border:none;padding:13px 30px;border-radius:12px;font-weight:700;cursor:pointer}
+
+  /* ---------- Pinterest mode ---------- */
+  #pin{column-count:3;column-gap:16px}
+  @media(max-width:880px){#pin{column-count:2}}
+  @media(max-width:580px){#pin{column-count:1}}
+  .pcard{break-inside:avoid;margin-bottom:16px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);padding:22px;border-left:6px solid var(--cc)}
+  .pcard .pe{line-height:1}
+  .pcard.lg .pe{font-size:3.6rem}
+  .pcard.md .pe{font-size:2.7rem}
+  .pcard.sm .pe{font-size:2rem}
+  .pcard .pterm{font-weight:700;margin:10px 0 8px;line-height:1.3}
+  .pcard.lg .pterm{font-size:1.3rem}
+  .pcard.md .pterm{font-size:1.08rem}
+  .pcard.sm .pterm{font-size:.98rem}
+  .pcard .pdef{font-size:.92rem;line-height:1.55;color:#334155}
+  .pcard.sm .pdef{font-size:.86rem}
+  .pcard .pextra{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;
+    font-size:.82rem;line-height:1.5;color:var(--soft)}
+  .pcard .ptag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--cc);background:var(--cc-l);padding:4px 10px;border-radius:99px;margin-top:12px}
+  .hide{display:none!important}
+  footer{text-align:center;color:var(--soft);font-size:.76rem;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← All sessions</a>
+  <h1>Frameworks · CORE — Which Tool for Which Exam Question</h1>
+  <p id="subtitle">37 core frameworks · 6 categories · 2 study modes</p>
+  <div class="modes-bar">
+    <button id="bFc" class="active" onclick="setMode('fc')">🃏 Flashcards</button>
+    <button id="bPin" onclick="setMode('pin')">📌 Pinterest</button>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="leg scope">Scope &amp; Diversification</span>
+  <span class="leg vertint">Vertical &amp; International</span>
+  <span class="leg growth">Growth Mode</span>
+  <span class="leg parent">Corporate Parent</span>
+  <span class="leg gov">Governance &amp; Ownership</span>
+  <span class="leg sustain">Sustainability</span>
+</div>
+
+<div class="wrap">
+  <div id="fc">
+    <div class="progress"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="cardHost"></div>
+    <div class="actions" id="acts">
+      <button class="again" onclick="markAgain()">↻ Study again</button>
+      <button class="know" onclick="markKnow()">✓ I know it</button>
+    </div>
+    <div class="navrow">
+      <button onclick="prevCard()">‹ Prev</button>
+      <button onclick="shuffle()">🔀 Shuffle</button>
+      <button onclick="restart()">⟲ Restart</button>
+      <button onclick="nextCard()">Skip ›</button>
+    </div>
+  </div>
+  <div id="pin" class="hide"></div>
+</div>
+<footer>Self-contained · works offline · Flashcards loop unknown cards · Pinterest = browse all at once</footer>
+
+<script>
+const catName = {
+  scope:   'Scope & Diversification',
+  vertint: 'Vertical & International',
+  growth:  'Growth Mode · Build/Buy/Partner',
+  parent:  'Corporate Parent & Portfolio',
+  gov:     'Governance & Ownership',
+  sustain: 'Sustainability & Strategy'
+};
+
+const cards = [
+  {id:1, emoji:'🧭', cat:'scope', sz:'lg',
+   term:'“Analyse / is the corporate strategy of company X sound?”',
+   def:'Use the TWO CORE QUESTIONS OF CORPORATE STRATEGY (no acronym):
+1. WHERE to compete — scope: which businesses, markets, value-chain stages.
+2. HOW the corporate centre adds value to the whole.',
+   extra:'Every other tool slots under one of these two. Structure any open “evaluate the corporate strategy” answer around them. Session 1; Parada & Planellas.'},
+  {id:2, emoji:'✅', cat:'scope', sz:'lg',
+   term:'“Should the firm diversify into / acquire this new business?”',
+   def:'Use PORTER’S THREE TESTS FOR DIVERSIFICATION — all three must pass:
+• Attractiveness — is the target industry structurally attractive (or can be made so)?
+• Cost-of-Entry — does the price NOT capitalise all future profit?
+• Better-Off — does either business gain competitive advantage from the link?',
+   extra:'Fail ANY one test → value destroyed. Porter 1987, “From Competitive Advantage to Corporate Strategy”, HBR. Session 3.'},
+  {id:3, emoji:'🧮', cat:'scope', sz:'md',
+   term:'“Economically, is joint ownership of these two businesses justified?”',
+   def:'Use THE TEST FOR DIVERSIFICATION (value formula). Justified only if:
+V(A) < −C(B) + V(AB)
+V(A) = value of A standalone | C(B) = cost of entering/acquiring B | V(AB) = value of A and B jointly operated.',
+   extra:'The quantitative backbone of Porter’s Better-Off test — synergy value must beat the cost of entry. Puranam & Vanneste. Session 3.'},
+  {id:4, emoji:'🧩', cat:'scope', sz:'lg',
+   term:'“How exactly is value created by combining business A and business B? Classify the synergy.”',
+   def:'Use THE 4C’s FRAMEWORK — a 2×2 on resource similarity × modification needed:
+• Consolidation — similar resources, high modification → eliminate redundancy
+• Combination — similar, low mod → volume / bargaining power
+• Customization — dissimilar, high mod → co-specialise, transfer IP
+• Connection — dissimilar, low mod → cross-sell, bundle, shared brand',
+   extra:'The go-to “name the synergy operator” tool (PepsiCo beverages × snacks). Puranam & Vanneste. Session 3.'},
+  {id:5, emoji:'🔗', cat:'scope', sz:'md',
+   term:'“Is this related or unrelated diversification — and does it make sense?”',
+   def:'Use the RELATED vs UNRELATED test. Related = businesses share a strategically valuable resource → value via economies of scope. Unrelated (conglomerate) = no shared resource; HQ acts as an internal capital market.',
+   extra:'Relatedness is about shared RESOURCES, not products — Honda links cars, bikes, marine & avionics via engine technology. Sessions 1 & 3.'},
+  {id:6, emoji:'📉', cat:'scope', sz:'md',
+   term:'“Should this conglomerate be broken up / why is it valued below its parts?”',
+   def:'Cite the DIVERSIFICATION (CONGLOMERATE) DISCOUNT: markets value diversified groups below the sum of standalone parts (~16% avg in the 1990s; ≈20% US, 15% UK, ~0% Germany).',
+   extra:'The evidence base for break-up / spin-off answers (PepsiCo–Peltz). Moderated by institutional context — emerging-market business groups can trade at a premium. Session 3.'},
+  {id:7, emoji:'🏭', cat:'vertint', sz:'lg',
+   term:'“Should the firm make this input in-house or buy it on the market?”',
+   def:'Use MARKET vs HIERARCHY (Transaction Cost Economics). Internalise (hierarchy) only when transaction costs exceed bureaucratic costs — i.e. high asset specificity, opportunism / small-numbers, uncertainty, frequency. Otherwise buy (market).',
+   extra:'Foundational make-or-buy logic (Coase 1937; Williamson). Session 4.'},
+  {id:8, emoji:'🔧', cat:'vertint', sz:'md',
+   term:'“Should the firm specialize or vertically integrate — and in which direction?”',
+   def:'Use SPECIALIZATION vs VERTICAL INTEGRATION (+ direction). Decide how many value-chain stages to own. Backward/upstream = control input cost & quality. Forward/downstream = control distribution, customer interface & learning.',
+   extra:'Grant’s framing is “which option under which conditions”, not VI yes/no. Tapered (partial) integration is the hybrid. Session 4.'},
+  {id:9, emoji:'🌍', cat:'vertint', sz:'lg',
+   term:'“Should the firm internationalize, and how should it approach it?”',
+   def:'Use the THREE KEY QUESTIONS OF INTERNATIONAL STRATEGY:
+• WHY go abroad (market / resource / efficiency / strategic-asset seeking)
+• WHERE to go (country choice)
+• HOW to enter & compete (entry mode)',
+   extra:'Master scaffold for any internationalization essay or case. Session 4.'},
+  {id:10, emoji:'🐀', cat:'vertint', sz:'md',
+   term:'“Does this firm have capabilities that can actually succeed abroad?”',
+   def:'Use THE RAT TEST (Lessard). A capability supports international expansion only if:
+R = Relevant — to the foreign market
+A = Appropriable — the firm (not others) captures the value
+T = Transferable — across borders',
+   extra:'Fast go/no-go filter: fail any one letter and expansion likely destroys value. Session 4 (Lessard 2003).'},
+  {id:11, emoji:'📏', cat:'vertint', sz:'md',
+   term:'“How far / different is this country for OUR industry?”',
+   def:'Use the CAGE DISTANCE FRAMEWORK (Ghemawat):
+C = Cultural | A = Administrative (politics, law, institutions) | G = Geographic (physical, infrastructure) | E = Economic (wealth, cost).
+Weight each dimension by what your industry depends on.',
+   extra:'Physical proximity ≠ market closeness. Reviewed in Session 7 for cross-border M&A. Ghemawat, “Distance Still Matters”, HBR 2001.'},
+  {id:12, emoji:'🗺️', cat:'vertint', sz:'md',
+   term:'“Which countries should we enter, and in what sequence?”',
+   def:'Use the GUPTA & GOVINDARAJAN MARKET-SELECTION MATRIX — a 2×2 of strategic importance of the market (size + learning) × the firm’s ability to exploit it → Quick entry | Sequential entry (beachhead first) | Opportunistic entry | Ignore for now.',
+   extra:'Converts country attractiveness into a concrete prioritisation + sequencing decision. Session 4 (2001).'},
+  {id:13, emoji:'🧱', cat:'growth', sz:'lg',
+   term:'“Should the firm build, buy, or partner to get this capability / enter this market?”',
+   def:'Use the THREE CORPORATE DEVELOPMENT MODES: BUILD = grow organically from within | BUY = acquire/merge (M&A) | PARTNER = alliance without full ownership.',
+   extra:'Master frame for any “how should it grow” answer; M&A trades control & integration risk for speed. Sessions 5, 7, 8.'},
+  {id:14, emoji:'🛤️', cat:'growth', sz:'lg',
+   term:'“What is the RIGHT path to close this resource gap?”',
+   def:'Use CAPRON & MITCHELL’S BUILD–BORROW–BUY. Diagnose the targeted resource: Available externally? Easy to copy? Easy to catch up? Easy to substitute? External availability → Borrow/Buy; otherwise Build.',
+   extra:'Cures the “always acquire” single-method trap; M&A is the last, most resource-intensive resort. Multi-method firms survive ~46% more often. Session 5.'},
+  {id:15, emoji:'💡', cat:'growth', sz:'md',
+   term:'“What is the strategic rationale for this acquisition?”',
+   def:'Use the 4 STRATEGIC RATIONALES FOR M&A: Market entry | Scale & growth | Synergies | Capability acquisition. Memory hook: “Speed buys M-S-S-C”.',
+   extra:'Baseline to test whether a stated deal rationale is sound — all four share the logic that buying is faster than building. Session 7.'},
+  {id:16, emoji:'➕', cat:'growth', sz:'md',
+   term:'“Will this acquisition actually create value?”',
+   def:'Apply the SYNERGY VALUE TEST: joint ownership creates value only if V(AB) > V(A) + C(B) — jointly-operated value beats standalone value plus cost of entry.',
+   extra:'Distinguishes real OPERATIONAL synergy from financial engineering or what investors could get by diversifying themselves. Session 7.'},
+  {id:17, emoji:'⚠️', cat:'growth', sz:'lg',
+   term:'“Why is this acquisition likely to fail / why did it fail?”',
+   def:'Use the MAIN PROBLEMS OF M&A framework:
+• PRE-deal — starting with the target not the strategy; winner’s curse (overpaying in an auction)
+• POST-deal — poor integration, weak leadership/planning, underestimated culture, neglected stakeholders',
+   extra:'>50% of deals destroy value (Damodaran). Separate deal-SELECTION error from EXECUTION error. Session 7.'},
+  {id:18, emoji:'📘', cat:'growth', sz:'lg',
+   term:'“Should the acquired business be absorbed or kept separate?”',
+   def:'Use the NEW M&A PLAYBOOK — LBM vs RBM:
+LBM = Leverage my Business Model — buy resources to boost the current model; fold them in.
+RBM = Reinvent my Business Model — buy a disruptive separate model as a growth platform; keep it SEPARATE.',
+   extra:'Absorbing an RBM target is fatal — Daimler folded Chrysler in and destroyed its lean model. Session 7.'},
+  {id:19, emoji:'📐', cat:'growth', sz:'md',
+   term:'“Should the firm ally, or acquire / build instead?”',
+   def:'Use the SPECTRUM OF INTER-FIRM GOVERNANCE: market transaction → vertical association / strategic alliance (hybrid) → hierarchy (M&A, vertical integration). Alliance = flexible, cost-effective under uncertainty.',
+   extra:'Situates alliances precisely between pure market exchange and full ownership (Strategor). Session 8.'},
+  {id:20, emoji:'🪢', cat:'growth', sz:'lg',
+   term:'“How should the firm manage this alliance / why is it underperforming?”',
+   def:'Use the 5-STEP ALLIANCE FRAMEWORK (Hoang & Rothaermel): Partner Selection → Deal Negotiation → Execution → Exit → Portfolio Management.',
+   extra:'~50% of alliances fail on 3 wrong assumptions: “we’ll find the right partner / capture enough value / it’ll stay relevant”. Session 8 reading.'},
+  {id:21, emoji:'🚀', cat:'growth', sz:'lg',
+   term:'“How should an established firm organise to build new businesses?”',
+   def:'Use the FOUR MODELS OF CORPORATE ENTREPRENEURSHIP (Wolcott & Lippitz) — a 2×2 of organizational ownership (diffused/focused) × resource authority (ad hoc/dedicated):
+Opportunist | Enabler | Advocate | Producer.',
+   extra:'Prescribes the organizational design; warns against costly champion-only trial-and-error. Session 10.'},
+  {id:22, emoji:'💰', cat:'growth', sz:'md',
+   term:'“Should the company set up / keep a CVC unit, and how should it be structured?”',
+   def:'Use CVC: STRATEGIC vs FINANCIAL VALUE. CVC = Corporate Venture Capital. Strategic logic = access to new ideas/tech/markets, real options. Financial logic = superior return like an independent VC.',
+   extra:'Key test — does the CVC improve the PARENT’s competitiveness, and is governance/metrics built for that? Session 10.'},
+  {id:23, emoji:'🏛️', cat:'parent', sz:'lg',
+   term:'“Is the corporate centre adding or destroying value?”',
+   def:'Use CORPORATE ADVANTAGE (better than the sum of the parts). The whole must be worth more than the businesses owned independently. The goal is NOT to maximise each BU’s NPV but to BEAT the sum of standalone parts.',
+   extra:'If the centre cannot, it is a value-destroying liability that invites corporate raiders. Sessions 1, 3 & 9.'},
+  {id:24, emoji:'🧷', cat:'parent', sz:'lg',
+   term:'“Is this parent the right owner for this specific business?”',
+   def:'Use PARENTING FIT / MISFIT (Ashridge). FIT = parent’s characteristics match the business’s needs & Critical Success Factors → value created. MISFIT = parent clashes with the CSFs → value destroyed.',
+   extra:'A parent’s skills are never good/bad in the absolute — only relative to a business’s needs. Campbell, Goold & Alexander. Session 9.'},
+  {id:25, emoji:'🪜', cat:'parent', sz:'md',
+   term:'“How do I structure a parenting-advantage analysis on this case?”',
+   def:'Use the 5-STEP PARENTING ANALYSIS: 1 Understand the business’s Critical Success Factors → 2 Identify parenting opportunities (upside) → 3 Assess parent characteristics fit/misfit → 4 Validate judgements → 5 Make changes to improve fit.',
+   extra:'The operational procedure to actually RUN the answer, not just name the concept (Ashridge). Session 9.'},
+  {id:26, emoji:'🔲', cat:'parent', sz:'lg',
+   term:'“What is the underlying logic of this multi-business firm / which corporate-strategy form should it adopt?”',
+   def:'Use the FOUR LOGICS OF CORPORATE STRATEGY — a 2×2 of corporate↔BU linkage × BU↔BU linkage:
+Portfolio (low/low) | Leverage (high corp–BU, low BU–BU) | Federal (low corp–BU, high BU–BU) | Integrative (high/high).',
+   extra:'Classifies any group and prescribes the corporate-vs-BU strategy split (Tata = Portfolio/Federal). Sull et al., MIT SMR 2017. Session 9.'},
+  {id:27, emoji:'🏗️', cat:'parent', sz:'md',
+   term:'“Through what mechanism could HQ raise group performance?”',
+   def:'Use the FOUR SOURCES OF CORPORATE-LEVEL VALUE CREATION: 1 Portfolio management | 2 Restructuring | 3 Synergies (skill transfer + shared activities) | 4 Reducing the cost of the corporate centre.',
+   extra:'Don’t forget the often-missed cost-of-centre subtraction. Anand/Grant. Session 9.'},
+  {id:28, emoji:'🧰', cat:'parent', sz:'md',
+   term:'“What does the corporate centre actually DO for its units?”',
+   def:'Use the FOUR TYPES OF PARENTING (Parada & Planellas): 1 Individual support (help as needs arise) | 2 Linking synergies (connect BUs) | 3 Central functions & services | 4 Corporate development (reshape/expand/shrink scope).',
+   extra:'Activity-level menu to describe the centre’s role (Disney marketing group; GE buy/sell). Sessions 1 & 9.'},
+  {id:29, emoji:'⚖️', cat:'gov', sz:'lg',
+   term:'“Why does this firm need a board / why might managers act against owners?”',
+   def:'Use AGENCY THEORY. Separating ownership (principal/shareholders) from control (agent/managers) creates interest misalignment; the board exists as the control mechanism.',
+   extra:'Root-cause lens — every governance device is a solution to the agency problem. Jensen & Meckling 1976. Session 2.'},
+  {id:30, emoji:'🌉', cat:'gov', sz:'md',
+   term:'“What value do these specific directors add BEYOND control?”',
+   def:'Use RESOURCE DEPENDENCE THEORY. RDT = Resource Dependence Theory — the board as a resource provider / external bridge supplying networks, legitimacy, expertise and information.',
+   extra:'The counterpart to Agency Theory; together they explain the optimal independent/connected board mix. Pfeffer & Salancik. Session 2.'},
+  {id:31, emoji:'🌐', cat:'gov', sz:'md',
+   term:'“Why does governance differ across countries / would a hostile takeover work here?”',
+   def:'Use the FOUR MODELS OF CAPITALISM: LME = Liberal Market Economy | CME = Coordinated Market Economy | FLME = Family-Led Market Economy | SLME = State-Led Market Economy.',
+   extra:'No universally “correct” model — the comparative-governance tool for cross-border governance clashes & convergence questions. Session 2.'},
+  {id:32, emoji:'🏷️', cat:'gov', sz:'md',
+   term:'“How does this firm’s ownership type shape its strategy & governance?”',
+   def:'Use the OWNERSHIP TYPES framework: Public | Private | Family | State-Owned | Private Equity | NGO/Foundation — each differs on its main governance challenge and time horizon.',
+   extra:'Ownership structure is the single biggest determinant of governance design. Session 2.'},
+  {id:33, emoji:'🛡️', cat:'gov', sz:'md',
+   term:'“How should the board supervise a diversification / M&A / alliance move?”',
+   def:'Use VALUE CREATION/DESTRUCTION & CORRECTION MECHANISMS (Parada & Garcia Fau). Perimeter-changing decisions create or destroy value; correctors = reference-shareholder / proxy-fight intervention + the market for corporate control.',
+   extra:'Links governance directly to corporate strategy (Engine No.1 vs Exxon; Peltz vs Disney). Session 2 reading.'},
+  {id:34, emoji:'🌍', cat:'sustain', sz:'lg',
+   term:'“What environmental limits must the firm operate within?”',
+   def:'Use PLANETARY BOUNDARIES — 9 Earth-system processes defining a safe operating space: climate change | biosphere integrity | nitrogen & phosphorus flows | land-system change | freshwater | ocean acidification | aerosols | ozone | novel entities. 7/9 already crossed.',
+   extra:'Makes sustainability a strategic, not philanthropic, imperative (Kering, Amsterdam use it). Stockholm Resilience Centre. Session 11.'},
+  {id:35, emoji:'🎯', cat:'sustain', sz:'md',
+   term:'“Which sustainability / ESG issues should the firm prioritise?”',
+   def:'Use MATERIALITY (double materiality). An issue is strategically material when it has a material financial impact on the firm AND the firm has a material impact on society/environment.',
+   extra:'The screening logic that turns a vast sustainability agenda into a focused, strategy-relevant set. Session 11.'},
+  {id:36, emoji:'📊', cat:'sustain', sz:'md',
+   term:'“How should the firm measure & report its sustainability performance?”',
+   def:'Use ESG. ESG = Environmental | Social | Governance — the metrics framework investors and regulators use to compare sustainability performance.',
+   extra:'Enforced differently by geography (litigation, regulation, reputation, investment, certification). Session 11.'},
+  {id:37, emoji:'🪜', cat:'sustain', sz:'lg',
+   term:'“Is sustainability genuinely strategic here, or just bolted-on?”',
+   def:'Use the EVOLUTION OF SUSTAINABILITY INTEGRATION (3 stages): Stage 1 Strategy → Performance (absent) | Stage 2 Strategy + Sustainability → Performance (bolted-on, beside strategy) | Stage 3 Strategy → Sustainability → Performance (embedded, a driver).',
+   extra:'Target state is Stage 3 — sustainability INSIDE, not beside, strategy. Session 11.'},
+];
+
+/* ================= logic ================= */
+let order=[], pos=0, queue=[], mode='fc';
+
+function setVars(el,cat){
+  el.style.setProperty('--cc', getComputedStyle(document.documentElement).getPropertyValue('--'+cat));
+  el.style.setProperty('--cc-l', getComputedStyle(document.documentElement).getPropertyValue('--'+cat+'-l'));
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('bFc').classList.toggle('active', m==='fc');
+  document.getElementById('bPin').classList.toggle('active', m==='pin');
+  document.getElementById('fc').classList.toggle('hide', m!=='fc');
+  document.getElementById('pin').classList.toggle('hide', m!=='pin');
+  if(m==='pin') buildPin(); else render();
+}
+
+function render(){
+  const host=document.getElementById('cardHost');
+  const acts=document.getElementById('acts');
+  if(pos>=queue.length){
+    host.innerHTML=`<div class="done"><h2>🎉 Deck complete!</h2>
+      <p>You worked through all ${order.length} cards.</p>
+      <button onclick="restart()">⟲ Study again</button></div>`;
+    acts.style.display='none';
+    document.querySelector('.navrow').style.display='none';
+    document.getElementById('bar').style.width='100%';
+    document.getElementById('count').textContent=`${order.length} / ${order.length}`;
+    return;
+  }
+  acts.style.display='flex';
+  document.querySelector('.navrow').style.display='flex';
+  const c=cards[queue[pos]];
+  host.innerHTML=`
+    <div class="scene"><div class="flip" id="flip" onclick="flipCard()">
+      <div class="face front">
+        <span class="cat-pill">${catName[c.cat]}</span>
+        <div class="emoji">${c.emoji}</div>
+        <div class="term">${c.term}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="face back">
+        <div class="b-emoji">${c.emoji}</div>
+        <div class="b-term">${c.term}</div>
+        <div class="def">${c.def.replace(/\n/g,'<br>')}</div>
+        ${c.extra?`<div class="extra">💡 ${c.extra}</div>`:''}
+      </div>
+    </div></div>`;
+  const flip=document.getElementById('flip');
+  setVars(flip.querySelector('.front'), c.cat);
+  setVars(flip.querySelector('.back'), c.cat);
+  const pct=Math.round((pos/queue.length)*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('count').textContent=`${pos+1} / ${queue.length}  ·  ${catName[c.cat]}`;
+}
+
+function flipCard(){ document.getElementById('flip').classList.toggle('flipped'); }
+function markKnow(){ pos++; render(); }
+function markAgain(){ queue.push(queue[pos]); pos++; render(); }
+function nextCard(){ pos++; render(); }
+function prevCard(){ if(pos>0){ pos--; render(); } }
+function shuffle(){
+  for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  pos=0; render();
+}
+function restart(){
+  order=cards.map((_,i)=>i);
+  queue=order.slice();
+  pos=0; render();
+}
+
+function buildPin(){
+  const sizeRank={lg:0,md:1,sm:2};
+  const sorted=[...cards].sort((a,b)=>sizeRank[a.sz]-sizeRank[b.sz]);
+  document.getElementById('pin').innerHTML=sorted.map(c=>`
+    <div class="pcard ${c.sz}" style="--cc:var(--${c.cat});--cc-l:var(--${c.cat}-l)">
+      <div class="pe">${c.emoji}</div>
+      <div class="pterm">${c.term}</div>
+      <div class="pdef">${c.def.replace(/\n/g,'<br>')}</div>
+      ${c.extra?`<div class="pextra">💡 ${c.extra}</div>`:''}
+      <span class="ptag">${catName[c.cat]}</span>
+    </div>`).join('');
+}
+
+document.getElementById('subtitle').textContent =
+  `${cards.length} concepts · ${Object.keys(catName).length} categories · 2 study modes`;
+restart();
+</script>
+</body>
+</html>
